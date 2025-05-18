@@ -1,0 +1,376 @@
+<%- include('../layouts/header', { title: 'Modifier un module', active: 'modules' }) %>
+
+<div class="module-edit-page">
+    <div class="page-header">
+        <h2>Modifier le module</h2>
+        <div class="header-actions">
+            <a href="/modules/1" class="btn-secondary">Annuler</a>
+            <button type="submit" form="module-form" class="btn-primary">Enregistrer</button>
+        </div>
+    </div>
+
+    <form id="module-form" class="module-form" method="POST" action="/modules/1/edit">
+        <div class="form-section">
+            <div class="form-group">
+                <label for="title">Titre du module</label>
+                <input type="text" id="title" name="title" required value="Confiance en soi">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3">Ce module aide à développer la confiance en soi pour réussir sa reconversion professionnelle.</textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Contenu du module</h3>
+            <p class="help-text">Modifiez les blocs de contenu de votre module</p>
+            
+            <div class="content-editor">
+                <div class="content-blocks" id="content-blocks">
+                    <!-- Les blocs existants seront chargés ici dynamiquement -->
+                    <div class="content-block heading-block" id="block-1" data-type="heading">
+                        <div class="block-controls">
+                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                        </div>
+                        <input type="text" class="heading-input" value="Introduction à la confiance en soi">
+                    </div>
+                    
+                    <div class="content-block paragraph-block" id="block-2" data-type="paragraph">
+                        <div class="block-controls">
+                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                        </div>
+                        <textarea class="paragraph-input">La confiance en soi est un élément essentiel dans votre parcours de reconversion professionnelle. Elle vous permet de vous affirmer, de croire en vos capacités et de persévérer face aux défis.</textarea>
+                    </div>
+                    
+                    <div class="content-block heading-block" id="block-3" data-type="heading">
+                        <div class="block-controls">
+                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                        </div>
+                        <input type="text" class="heading-input" value="Exercices pratiques">
+                    </div>
+                    
+                    <div class="content-block list-block" id="block-4" data-type="list">
+                        <div class="block-controls">
+                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                        </div>
+                        <div class="list-items">
+                            <div class="list-item">
+                                <input type="text" value="Identifier ses forces et ses réussites passées">
+                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
+                            </div>
+                            <div class="list-item">
+                                <input type="text" value="Techniques de visualisation positive">
+                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
+                            </div>
+                            <div class="list-item">
+                                <input type="text" value="Exercices de communication assertive">
+                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
+                            </div>
+                            <div class="list-item">
+                                <input type="text" value="Journal de gratitude et d'affirmations">
+                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
+                            </div>
+                            <div class="list-item">
+                                <input type="text" placeholder="Nouvel élément de liste">
+                                <button type="button" class="btn-add-item"><img src="/images/Plus.svg" alt="+"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="add-block-button">
+                    <button type="button" id="add-block-btn" class="btn-outline">
+                        <img src="/images/Plus.svg" alt="+" class="icon-small">
+                        Ajouter un bloc
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="content-json" name="content" value='[
+            {"id":"block-1","type":"heading","content":"Introduction à la confiance en soi"},
+            {"id":"block-2","type":"paragraph","content":"La confiance en soi est un élément essentiel dans votre parcours de reconversion professionnelle. Elle vous permet de vous affirmer, de croire en vos capacités et de persévérer face aux défis."},
+            {"id":"block-3","type":"heading","content":"Exercices pratiques"},
+            {"id":"block-4","type":"list","content":["Identifier ses forces et ses réussites passées","Techniques de visualisation positive","Exercices de communication assertive","Journal de gratitude et d'affirmations"]}
+        ]'>
+    </form>
+
+    <!-- Menu contextuel pour les types de blocs -->
+    <div id="block-menu" class="block-menu" style="display: none;">
+        <div class="block-menu-item" data-type="heading">
+            <img src="/images/title.svg" alt="Titre" class="icon-small">
+            <span>Titre</span>
+        </div>
+        <div class="block-menu-item" data-type="paragraph">
+            <img src="/images/text_fields.svg" alt="Paragraphe" class="icon-small">
+            <span>Paragraphe</span>
+        </div>
+        <div class="block-menu-item" data-type="list">
+            <img src="/images/format_list_bulleted.svg" alt="Liste" class="icon-small">
+            <span>Liste à puces</span>
+        </div>
+        <div class="block-menu-item" data-type="image">
+            <img src="/images/photo_library.svg" alt="Image" class="icon-small">
+            <span>Image</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addBlockBtn = document.getElementById('add-block-btn');
+        const blockMenu = document.getElementById('block-menu');
+        const contentBlocks = document.getElementById('content-blocks');
+        const contentJsonInput = document.getElementById('content-json');
+        let blocks = JSON.parse(contentJsonInput.value);
+
+        // Configurer les gestionnaires d'événements pour les blocs existants
+        document.querySelectorAll('.content-block').forEach(block => {
+            setupBlockEvents(block);
+        });
+
+        // Afficher le menu de sélection de bloc
+        addBlockBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            const rect = addBlockBtn.getBoundingClientRect();
+            blockMenu.style.top = `${rect.bottom + window.scrollY}px`;
+            blockMenu.style.left = `${rect.left}px`;
+            blockMenu.style.display = 'block';
+        });
+
+        // Cacher le menu quand on clique ailleurs
+        document.addEventListener('click', function() {
+            blockMenu.style.display = 'none';
+        });
+
+        // Empêcher la fermeture quand on clique sur le menu
+        blockMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Ajouter un bloc quand on sélectionne un type
+        document.querySelectorAll('.block-menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const blockType = this.getAttribute('data-type');
+                addBlock(blockType);
+                blockMenu.style.display = 'none';
+            });
+        });
+
+        // Fonction pour ajouter un nouveau bloc au contenu
+        function addBlock(type) {
+            const blockId = 'block-' + Date.now();
+            let blockHtml = '';
+            
+            switch(type) {
+                case 'heading':
+                    blockHtml = `
+                        <div class="content-block heading-block" id="${blockId}" data-type="heading">
+                            <div class="block-controls">
+                                <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                                <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                            </div>
+                            <input type="text" class="heading-input" placeholder="Titre de section">
+                        </div>
+                    `;
+                    break;
+                    
+                case 'paragraph':
+                    blockHtml = `
+                        <div class="content-block paragraph-block" id="${blockId}" data-type="paragraph">
+                            <div class="block-controls">
+                                <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                                <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                            </div>
+                            <textarea class="paragraph-input" placeholder="Écrivez votre texte ici..."></textarea>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'list':
+                    blockHtml = `
+                        <div class="content-block list-block" id="${blockId}" data-type="list">
+                            <div class="block-controls">
+                                <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                                <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                            </div>
+                            <div class="list-items">
+                                <div class="list-item">
+                                    <input type="text" placeholder="Élément de liste">
+                                    <button type="button" class="btn-add-item"><img src="/images/Plus.svg" alt="+"></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'image':
+                    blockHtml = `
+                        <div class="content-block image-block" id="${blockId}" data-type="image">
+                            <div class="block-controls">
+                                <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                                <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
+                            </div>
+                            <div class="image-upload">
+                                <input type="file" id="image-${blockId}" accept="image/*">
+                                <label for="image-${blockId}" class="upload-label">
+                                    <img src="/images/photo_library.svg" alt="Upload" class="icon-medium">
+                                    <span>Cliquez pour ajouter une image</span>
+                                </label>
+                                <div class="image-preview" style="display: none;">
+                                    <img src="" alt="Preview">
+                                </div>
+                            </div>
+                            <input type="text" class="image-caption" placeholder="Légende de l'image (optionnel)">
+                        </div>
+                    `;
+                    break;
+            }
+            
+            // Ajouter le bloc au DOM
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = blockHtml;
+            const blockElement = tempDiv.firstElementChild;
+            contentBlocks.appendChild(blockElement);
+            
+            // Ajouter les gestionnaires d'événements pour ce bloc
+            setupBlockEvents(blockElement);
+            
+            // Mettre à jour la valeur JSON
+            blocks.push({
+                id: blockId,
+                type: type,
+                content: ''
+            });
+            
+            updateContentJson();
+        }
+        
+        // Configurer les événements pour un bloc
+        function setupBlockEvents(block) {
+            // Supprimer un bloc
+            block.querySelector('.btn-delete').addEventListener('click', function() {
+                block.remove();
+                blocks = blocks.filter(b => b.id !== block.id);
+                updateContentJson();
+            });
+            
+            // Autres événements spécifiques aux types de blocs
+            if (block.classList.contains('list-block')) {
+                const addItemBtn = block.querySelector('.btn-add-item');
+                if (addItemBtn) {
+                    addItemBtn.addEventListener('click', function() {
+                        const listItems = block.querySelector('.list-items');
+                        const newItem = document.createElement('div');
+                        newItem.className = 'list-item';
+                        newItem.innerHTML = `
+                            <input type="text" placeholder="Élément de liste">
+                            <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
+                        `;
+                        listItems.appendChild(newItem);
+                        
+                        newItem.querySelector('.btn-remove-item').addEventListener('click', function() {
+                            newItem.remove();
+                            updateContent(block);
+                        });
+                    });
+                }
+                
+                // Configurer les boutons de suppression d'éléments existants
+                block.querySelectorAll('.btn-remove-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.closest('.list-item').remove();
+                        updateContent(block);
+                    });
+                });
+            }
+            
+            // Pour les images
+            if (block.classList.contains('image-block')) {
+                const fileInput = block.querySelector('input[type="file"]');
+                const preview = block.querySelector('.image-preview');
+                const previewImg = preview.querySelector('img');
+                
+                fileInput.addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            previewImg.src = e.target.result;
+                            preview.style.display = 'block';
+                            block.querySelector('.upload-label').style.display = 'none';
+                        };
+                        
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            }
+            
+            // Mettre à jour le contenu quand il change
+            const inputs = block.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    updateContent(block);
+                });
+            });
+        }
+        
+        // Mettre à jour le contenu d'un bloc dans l'objet JSON
+        function updateContent(block) {
+            const blockId = block.id;
+            const blockType = block.getAttribute('data-type');
+            const blockIndex = blocks.findIndex(b => b.id === blockId);
+            
+            if (blockIndex === -1) return;
+            
+            let content = '';
+            
+            switch(blockType) {
+                case 'heading':
+                    content = block.querySelector('.heading-input').value;
+                    break;
+                    
+                case 'paragraph':
+                    content = block.querySelector('.paragraph-input').value;
+                    break;
+                    
+                case 'list':
+                    const items = block.querySelectorAll('.list-item input');
+                    content = Array.from(items).map(item => item.value).filter(Boolean);
+                    break;
+                    
+                case 'image':
+                    // Dans une version réelle, vous devriez gérer l'upload d'image
+                    // ici nous stockons simplement la légende
+                    content = {
+                        caption: block.querySelector('.image-caption').value
+                    };
+                    break;
+            }
+            
+            blocks[blockIndex].content = content;
+            updateContentJson();
+        }
+        
+        // Mettre à jour la valeur JSON dans le formulaire
+        function updateContentJson() {
+            contentJsonInput.value = JSON.stringify(blocks);
+        }
+        
+        // Validation du formulaire
+        document.getElementById('module-form').addEventListener('submit', function(e) {
+            if (blocks.length === 0) {
+                e.preventDefault();
+                alert('Veuillez ajouter au moins un bloc de contenu à votre module.');
+            }
+        });
+    });
+</script>
+
+<%- include('../layouts/footer') %>

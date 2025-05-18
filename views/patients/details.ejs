@@ -1,0 +1,231 @@
+<%- include('../layouts/header', { title: 'Détails de la patiente', active: 'patients' }) %>
+
+<div class="patient-details-page">
+    <div class="page-header">
+        <div class="header-actions">
+            <a href="/patients" class="btn-back">
+                <img src="/images/arrow_back.svg" alt="Retour" class="icon-small">
+                Retour à la liste
+            </a>
+        </div>
+        <div class="header-actions-right">
+            <a href="/patients/1/edit" class="btn-secondary">
+                <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                Modifier
+            </a>
+            <button class="btn-danger delete-patient" data-id="1">
+                <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                Supprimer
+            </button>
+        </div>
+    </div>
+
+    <div class="patient-details-content">
+        <div class="patient-header">
+            <h1>Sophie Martin</h1>
+            <span class="patient-since">Cliente depuis le 12/05/2025</span>
+        </div>
+
+        <div class="patient-info-grid">
+            <div class="info-card personal-info">
+                <h3>Informations personnelles</h3>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">sophie.martin@email.com</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Téléphone</span>
+                        <span class="info-value">06 12 34 56 78</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Date de naissance</span>
+                        <span class="info-value">15/03/1985</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Adresse</span>
+                        <span class="info-value">123 Rue de Paris, 75001 Paris</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card professional-info">
+                <h3>Profil professionnel</h3>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">Emploi actuel</span>
+                        <span class="info-value">Assistante administrative</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Emploi visé</span>
+                        <span class="info-value">Développeuse web</span>
+                    </div>
+                    <div class="info-item full-width">
+                        <span class="info-label">Compétences</span>
+                        <span class="info-value">
+                            <div class="skills-list">
+                                <span class="skill-tag">Organisation</span>
+                                <span class="skill-tag">Communication</span>
+                                <span class="skill-tag">Pack Office</span>
+                                <span class="skill-tag">Anglais</span>
+                                <span class="skill-tag">HTML/CSS (débutant)</span>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="info-item full-width">
+                        <span class="info-label">Expérience</span>
+                        <span class="info-value">
+                            8 ans d'expérience en tant qu'assistante administrative dans divers secteurs.
+                            Formation en ligne en développement web depuis 6 mois.
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card notes-section">
+                <h3>Notes personnelles</h3>
+                <div class="notes-content">
+                    <p>Sophie est très motivée pour sa reconversion. Elle a déjà commencé à apprendre le développement web en autodidacte et cherche à renforcer sa confiance en elle pour les entretiens d'embauche.</p>
+                    <p>Prochain rendez-vous prévu le 25/05/2025 pour faire le point sur sa progression.</p>
+                </div>
+            </div>
+
+            <div class="info-card modules-section">
+                <div class="section-header">
+                    <h3>Modules suivis</h3>
+                    <button class="btn-outline btn-small add-module-btn">
+                        <img src="/images/Plus.svg" alt="+" class="icon-small">
+                        Assigner un module
+                    </button>
+                </div>
+                <div class="modules-list">
+                    <div class="module-progress-item">
+                        <div class="module-info">
+                            <h4>Confiance en soi</h4>
+                            <span class="date-assigned">Assigné le 12/05/2025</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                            <span class="progress-text">75% complété</span>
+                        </div>
+                    </div>
+                    <div class="module-progress-item">
+                        <div class="module-info">
+                            <h4>Préparation à l'entretien</h4>
+                            <span class="date-assigned">Assigné le 14/05/2025</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                            <span class="progress-text">40% complété</span>
+                        </div>
+                    </div>
+                    <div class="module-progress-item">
+                        <div class="module-info">
+                            <h4>CV et lettre de motivation</h4>
+                            <span class="date-assigned">Assigné le 14/05/2025</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                            <span class="progress-text">90% complété</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Module assignment popup -->
+<div id="module-assignment-popup" class="popup-container" style="display: none;">
+    <div class="popup-content">
+        <h3>Assigner un module</h3>
+        <form id="assign-module-form">
+            <div class="form-group">
+                <label for="module-select">Sélectionner un module</label>
+                <select id="module-select" name="module_id" required>
+                    <option value="">-- Choisir un module --</option>
+                    <option value="2">Gestion du stress</option>
+                    <option value="5">Recherche d'emploi</option>
+                    <option value="6">Reconversion professionnelle</option>
+                </select>
+            </div>
+            <div class="popup-buttons">
+                <button type="button" id="cancel-assignment" class="btn-secondary">Annuler</button>
+                <button type="submit" class="btn-primary">Assigner</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestionnaire pour le bouton de suppression de patiente
+        const deleteButton = document.querySelector('.delete-patient');
+        const popup = document.getElementById('validation-popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMessage = document.getElementById('popup-message');
+        const popupCancel = document.getElementById('popup-cancel');
+        const popupConfirm = document.getElementById('popup-confirm');
+        
+        deleteButton.addEventListener('click', function() {
+            const patientId = this.getAttribute('data-id');
+            
+            popupTitle.textContent = 'Confirmation de suppression';
+            popupMessage.textContent = 'Êtes-vous sûr de vouloir supprimer cette patiente ? Cette action est irréversible.';
+            
+            popup.style.display = 'flex';
+            
+            popupCancel.onclick = function() {
+                popup.style.display = 'none';
+            };
+            
+            popupConfirm.onclick = function() {
+                // Ici, ajoutez le code pour supprimer réellement la patiente
+                // par exemple, avec un appel fetch à votre API
+                console.log('Suppression de la patiente ' + patientId);
+                window.location.href = '/patients';
+            };
+        });
+        
+        // Gestion du popup d'assignation de module
+        const addModuleBtn = document.querySelector('.add-module-btn');
+        const modulePopup = document.getElementById('module-assignment-popup');
+        const cancelAssignmentBtn = document.getElementById('cancel-assignment');
+        const assignModuleForm = document.getElementById('assign-module-form');
+        
+        addModuleBtn.addEventListener('click', function() {
+            modulePopup.style.display = 'flex';
+        });
+        
+        cancelAssignmentBtn.addEventListener('click', function() {
+            modulePopup.style.display = 'none';
+        });
+        
+        assignModuleForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const moduleId = document.getElementById('module-select').value;
+            
+            if (!moduleId) {
+                alert('Veuillez sélectionner un module');
+                return;
+            }
+            
+            // Ici, ajoutez le code pour assigner le module à la patiente
+            // par exemple, avec un appel fetch à votre API
+            console.log('Assignation du module ' + moduleId + ' à la patiente 1');
+            
+            // Simuler le succès de l'assignation
+            modulePopup.style.display = 'none';
+            alert('Module assigné avec succès !');
+            // Dans une application réelle, vous rechargeriez les données ou mettriez à jour l'UI
+        });
+    });
+</script>
+
+<%- include('../layouts/footer') %>

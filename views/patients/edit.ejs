@@ -1,0 +1,150 @@
+<%- include('../layouts/header', { title: 'Modifier une patiente', active: 'patients' }) %>
+
+<div class="patient-edit-page">
+    <div class="page-header">
+        <h2>Modifier la patiente</h2>
+        <div class="header-actions">
+            <a href="/patients/1" class="btn-secondary">Annuler</a>
+            <button type="submit" form="patient-form" class="btn-primary">Enregistrer</button>
+        </div>
+    </div>
+
+    <form id="patient-form" class="patient-form" method="POST" action="/patients/1/edit">
+        <div class="form-section">
+            <h3>Informations personnelles</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstname">Prénom</label>
+                    <input type="text" id="firstname" name="firstname" required value="Sophie">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastname">Nom</label>
+                    <input type="text" id="lastname" name="lastname" required value="Martin">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required value="sophie.martin@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Téléphone</label>
+                    <input type="tel" id="phone" name="phone" pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}" value="06 12 34 56 78">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="birthdate">Date de naissance</label>
+                    <input type="date" id="birthdate" name="birthdate" value="1985-03-15">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Adresse</label>
+                    <input type="text" id="address" name="address" value="123 Rue de Paris, 75001 Paris">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Profil professionnel</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="current_job">Emploi actuel</label>
+                    <input type="text" id="current_job" name="current_job" value="Assistante administrative">
+                </div>
+                
+                <div class="form-group">
+                    <label for="target_job">Emploi visé</label>
+                    <input type="text" id="target_job" name="target_job" value="Développeuse web">
+                </div>
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="skills">Compétences</label>
+                <textarea id="skills" name="skills" rows="3">Organisation, Communication, Pack Office, Anglais, HTML/CSS (débutant)</textarea>
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="experience">Expérience professionnelle</label>
+                <textarea id="experience" name="experience" rows="3">8 ans d'expérience en tant qu'assistante administrative dans divers secteurs. Formation en ligne en développement web depuis 6 mois.</textarea>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Suivi et accompagnement</h3>
+            
+            <div class="form-group full-width">
+                <label for="notes">Notes personnelles</label>
+                <textarea id="notes" name="notes" rows="3">Sophie est très motivée pour sa reconversion. Elle a déjà commencé à apprendre le développement web en autodidacte et cherche à renforcer sa confiance en elle pour les entretiens d'embauche.
+
+Prochain rendez-vous prévu le 25/05/2025 pour faire le point sur sa progression.</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Modules assignés</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="module1" name="modules[]" value="1" checked>
+                        <label for="module1">Confiance en soi</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="module2" name="modules[]" value="2">
+                        <label for="module2">Gestion du stress</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="module3" name="modules[]" value="3" checked>
+                        <label for="module3">Préparation à l'entretien</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="module4" name="modules[]" value="4" checked>
+                        <label for="module4">CV et lettre de motivation</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Formater automatiquement le numéro de téléphone
+        const phoneInput = document.getElementById('phone');
+        
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Garder uniquement les chiffres
+            
+            if (value.length > 0) {
+                // Formater en groupes de 2 chiffres
+                value = value.match(/.{1,2}/g).join(' ');
+            }
+            
+            e.target.value = value.substring(0, 14); // Limiter à 10 chiffres + espaces
+        });
+        
+        // Validation du formulaire
+        document.getElementById('patient-form').addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Veuillez entrer une adresse email valide.');
+                return;
+            }
+            
+            const phone = document.getElementById('phone').value.replace(/\s/g, '');
+            if (phone && phone.length !== 10) {
+                e.preventDefault();
+                alert('Le numéro de téléphone doit contenir 10 chiffres.');
+            }
+        });
+    });
+</script>
+
+<%- include('../layouts/footer') %>

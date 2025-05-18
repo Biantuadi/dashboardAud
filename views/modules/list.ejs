@@ -1,0 +1,142 @@
+<%- include('../layouts/header', { title: 'Liste des modules', active: 'modules' }) %>
+
+<div class="modules-list-page">
+    <div class="page-header">
+        <h2>Liste des modules</h2>
+        <a href="/modules/add" class="btn-primary">
+            <img src="/images/Plus.svg" alt="+" class="icon-small">
+            Ajouter un module
+        </a>
+    </div>
+
+    <div class="search-sort-container">
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher un module..." id="module-search">
+            <button type="button" class="btn-search">
+                <img src="/images/search.svg" alt="Recherche" class="icon-small">
+            </button>
+        </div>
+        <div class="sort-dropdown">
+            <button class="btn-sort">
+                Trier par
+                <img src="/images/sort.svg" alt="Trier" class="icon-small">
+            </button>
+            <div class="sort-options">
+                <a href="#" data-sort="title-asc">Titre (A-Z)</a>
+                <a href="#" data-sort="title-desc">Titre (Z-A)</a>
+                <a href="#" data-sort="date-desc">Plus récent</a>
+                <a href="#" data-sort="date-asc">Plus ancien</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modules-grid">
+        <div class="module-card">
+            <div class="module-card-header">
+                <h3>Confiance en soi</h3>
+                <div class="module-actions">
+                    <a href="/modules/1" class="btn-action">
+                        <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                    </a>
+                    <a href="/modules/1/edit" class="btn-action">
+                        <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                    </a>
+                    <button class="btn-action delete-module" data-id="1">
+                        <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                    </button>
+                </div>
+            </div>
+            <div class="module-card-content">
+                <p>Ce module aide à développer la confiance en soi pour réussir sa reconversion professionnelle.</p>
+            </div>
+            <div class="module-card-footer">
+                <span class="module-date">Créé le 10/05/2025</span>
+                <span class="module-lessons">5 leçons</span>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-card-header">
+                <h3>Gestion du stress</h3>
+                <div class="module-actions">
+                    <a href="/modules/2" class="btn-action">
+                        <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                    </a>
+                    <a href="/modules/2/edit" class="btn-action">
+                        <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                    </a>
+                    <button class="btn-action delete-module" data-id="2">
+                        <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                    </button>
+                </div>
+            </div>
+            <div class="module-card-content">
+                <p>Techniques efficaces pour gérer le stress pendant la période de reconversion professionnelle.</p>
+            </div>
+            <div class="module-card-footer">
+                <span class="module-date">Créé le 08/05/2025</span>
+                <span class="module-lessons">4 leçons</span>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-card-header">
+                <h3>Préparation à l'entretien</h3>
+                <div class="module-actions">
+                    <a href="/modules/3" class="btn-action">
+                        <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                    </a>
+                    <a href="/modules/3/edit" class="btn-action">
+                        <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                    </a>
+                    <button class="btn-action delete-module" data-id="3">
+                        <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                    </button>
+                </div>
+            </div>
+            <div class="module-card-content">
+                <p>Conseils et exercices pratiques pour réussir vos entretiens d'embauche dans votre nouveau domaine.</p>
+            </div>
+            <div class="module-card-footer">
+                <span class="module-date">Créé le 02/05/2025</span>
+                <span class="module-lessons">6 leçons</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestionnaire pour le bouton de suppression de module
+        const deleteButtons = document.querySelectorAll('.delete-module');
+        const popup = document.getElementById('validation-popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMessage = document.getElementById('popup-message');
+        const popupCancel = document.getElementById('popup-cancel');
+        const popupConfirm = document.getElementById('popup-confirm');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const moduleId = this.getAttribute('data-id');
+                
+                popupTitle.textContent = 'Confirmation de suppression';
+                popupMessage.textContent = 'Êtes-vous sûr de vouloir supprimer ce module ? Cette action est irréversible.';
+                
+                popup.style.display = 'flex';
+                
+                popupCancel.onclick = function() {
+                    popup.style.display = 'none';
+                };
+                
+                popupConfirm.onclick = function() {
+                    // Ici, ajoutez le code pour supprimer réellement le module
+                    // par exemple, avec un appel fetch à votre API
+                    console.log('Suppression du module ' + moduleId);
+                    popup.style.display = 'none';
+                };
+            });
+        });
+    });
+</script>
+
+<%- include('../layouts/footer') %>

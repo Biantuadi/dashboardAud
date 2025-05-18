@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Audacieuses - <%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-layout">
+    <header class="main-header">
+        <div class="header-left">
+            <div class="logo">
+                <img src="/images/logo.svg" alt="Les Audacieuses Logo">
+            </div>
+            <h1>Dashboard Administrateur</h1>
+        </div>
+        <div class="header-right">
+            <div class="user-profile">
+                <span class="user-name"><%= locals.userName || 'Admin' %></span>
+                <a href="/logout" class="logout-btn">Déconnexion</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar">
+            <nav class="main-nav">
+                <ul>
+                    <li class="<%= active === 'dashboard' ? 'active' : '' %>">
+                        <a href="/dashboard">
+                            <img src="/images/home.svg" alt="Accueil">
+                            <span>Accueil</span>
+                        </a>
+                    </li>
+                    <li class="<%= active === 'modules' ? 'active' : '' %>">
+                        <a href="/modules">
+                            <img src="/images/book.svg" alt="Modules">
+                            <span>Modules</span>
+                        </a>
+                    </li>
+                    <li class="<%= active === 'patients' ? 'active' : '' %>">
+                        <a href="/patients">
+                            <img src="/images/person.svg" alt="Patientes">
+                            <span>Patientes</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">

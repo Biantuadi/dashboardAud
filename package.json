@@ -1,0 +1,29 @@
+{
+  "name": "les-audacieuses-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard pour l'accompagnement des femmes et mamans en reconversion professionnelle",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "init": "node init-admin.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Les Audacieuses",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "morgan": "^1.10.0",
+    "mongoose": "^8.14.3",
+    "multer": "^1.4.5-lts.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

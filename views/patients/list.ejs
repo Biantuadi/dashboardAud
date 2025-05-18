@@ -1,0 +1,236 @@
+<%- include('../layouts/header', { title: 'Liste des patientes', active: 'patients' }) %>
+
+<div class="patients-list-page">
+    <div class="page-header">
+        <h2>Liste des patientes</h2>
+        <a href="/patients/add" class="btn-primary">
+            <img src="/images/Plus.svg" alt="+" class="icon-small">
+            Ajouter une patiente
+        </a>
+    </div>
+
+    <div class="search-sort-container">
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher une patiente..." id="patient-search">
+            <button type="button" class="btn-search">
+                <img src="/images/search.svg" alt="Recherche" class="icon-small">
+            </button>
+        </div>
+        <div class="sort-dropdown">
+            <button class="btn-sort">
+                Trier par
+                <img src="/images/sort.svg" alt="Trier" class="icon-small">
+            </button>
+            <div class="sort-options">
+                <a href="#" data-sort="name-asc">Nom (A-Z)</a>
+                <a href="#" data-sort="name-desc">Nom (Z-A)</a>
+                <a href="#" data-sort="date-desc">Plus récente</a>
+                <a href="#" data-sort="date-asc">Plus ancienne</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="patients-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Date d'inscription</th>
+                    <th>Modules suivis</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sophie Martin</td>
+                    <td>sophie.martin@email.com</td>
+                    <td>06 12 34 56 78</td>
+                    <td>12/05/2025</td>
+                    <td>3</td>
+                    <td class="patient-actions">
+                        <a href="/patients/1" class="btn-action" title="Voir">
+                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                        </a>
+                        <a href="/patients/1/edit" class="btn-action" title="Éditer">
+                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                        </a>
+                        <button class="btn-action delete-patient" data-id="1" title="Supprimer">
+                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Laura Dubois</td>
+                    <td>laura.dubois@email.com</td>
+                    <td>06 98 76 54 32</td>
+                    <td>05/05/2025</td>
+                    <td>2</td>
+                    <td class="patient-actions">
+                        <a href="/patients/2" class="btn-action" title="Voir">
+                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                        </a>
+                        <a href="/patients/2/edit" class="btn-action" title="Éditer">
+                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                        </a>
+                        <button class="btn-action delete-patient" data-id="2" title="Supprimer">
+                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Julie Blanc</td>
+                    <td>julie.blanc@email.com</td>
+                    <td>06 45 67 89 01</td>
+                    <td>01/05/2025</td>
+                    <td>4</td>
+                    <td class="patient-actions">
+                        <a href="/patients/3" class="btn-action" title="Voir">
+                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                        </a>
+                        <a href="/patients/3/edit" class="btn-action" title="Éditer">
+                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                        </a>
+                        <button class="btn-action delete-patient" data-id="3" title="Supprimer">
+                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Camille Durand</td>
+                    <td>camille.durand@email.com</td>
+                    <td>06 78 90 12 34</td>
+                    <td>28/04/2025</td>
+                    <td>1</td>
+                    <td class="patient-actions">
+                        <a href="/patients/4" class="btn-action" title="Voir">
+                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                        </a>
+                        <a href="/patients/4/edit" class="btn-action" title="Éditer">
+                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                        </a>
+                        <button class="btn-action delete-patient" data-id="4" title="Supprimer">
+                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Émilie Petit</td>
+                    <td>emilie.petit@email.com</td>
+                    <td>06 23 45 67 89</td>
+                    <td>25/04/2025</td>
+                    <td>3</td>
+                    <td class="patient-actions">
+                        <a href="/patients/5" class="btn-action" title="Voir">
+                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                        </a>
+                        <a href="/patients/5/edit" class="btn-action" title="Éditer">
+                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                        </a>
+                        <button class="btn-action delete-patient" data-id="5" title="Supprimer">
+                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestionnaire pour le bouton de suppression de patiente
+        const deleteButtons = document.querySelectorAll('.delete-patient');
+        const popup = document.getElementById('validation-popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMessage = document.getElementById('popup-message');
+        const popupCancel = document.getElementById('popup-cancel');
+        const popupConfirm = document.getElementById('popup-confirm');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const patientId = this.getAttribute('data-id');
+                
+                popupTitle.textContent = 'Confirmation de suppression';
+                popupMessage.textContent = 'Êtes-vous sûr de vouloir supprimer cette patiente ? Cette action est irréversible.';
+                
+                popup.style.display = 'flex';
+                
+                popupCancel.onclick = function() {
+                    popup.style.display = 'none';
+                };
+                
+                popupConfirm.onclick = function() {
+                    // Ici, ajoutez le code pour supprimer réellement la patiente
+                    // par exemple, avec un appel fetch à votre API
+                    console.log('Suppression de la patiente ' + patientId);
+                    popup.style.display = 'none';
+                };
+            });
+        });
+        
+        // Fonctionnalité de recherche
+        const searchInput = document.getElementById('patient-search');
+        const tableRows = document.querySelectorAll('.patients-table tbody tr');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const email = row.cells[1].textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+        
+        // Fonctionnalité de tri
+        const sortOptions = document.querySelectorAll('.sort-options a');
+        
+        sortOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const sortType = this.getAttribute('data-sort');
+                const rows = Array.from(tableRows);
+                
+                rows.sort((a, b) => {
+                    let valA, valB;
+                    
+                    if (sortType === 'name-asc' || sortType === 'name-desc') {
+                        valA = a.cells[0].textContent;
+                        valB = b.cells[0].textContent;
+                    } else if (sortType === 'date-asc' || sortType === 'date-desc') {
+                        // Convertir les dates françaises (DD/MM/YYYY) en format comparable
+                        const dateParts1 = a.cells[3].textContent.split('/');
+                        const dateParts2 = b.cells[3].textContent.split('/');
+                        
+                        valA = new Date(dateParts1[2], dateParts1[1] - 1, dateParts1[0]);
+                        valB = new Date(dateParts2[2], dateParts2[1] - 1, dateParts2[0]);
+                    }
+                    
+                    if (sortType === 'name-asc') {
+                        return valA.localeCompare(valB);
+                    } else if (sortType === 'name-desc') {
+                        return valB.localeCompare(valA);
+                    } else if (sortType === 'date-asc') {
+                        return valA - valB;
+                    } else if (sortType === 'date-desc') {
+                        return valB - valA;
+                    }
+                });
+                
+                // Réorganiser les lignes dans le tableau
+                const tbody = document.querySelector('.patients-table tbody');
+                rows.forEach(row => tbody.appendChild(row));
+            });
+        });
+    });
+</script>
+
+<%- include('../layouts/footer') %>

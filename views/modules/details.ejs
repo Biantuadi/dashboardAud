@@ -1,0 +1,157 @@
+<%- include('../layouts/header', { title: 'Détails du module', active: 'modules' }) %>
+
+<div class="module-details-page">
+    <div class="page-header">
+        <div class="header-actions">
+            <a href="/modules" class="btn-back">
+                <img src="/images/arrow_back.svg" alt="Retour" class="icon-small">
+                Retour à la liste
+            </a>
+        </div>
+        <div class="header-actions-right">
+            <a href="/modules/1/edit" class="btn-secondary">
+                <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                Modifier
+            </a>
+            <button class="btn-danger delete-module" data-id="1">
+                <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                Supprimer
+            </button>
+        </div>
+    </div>
+
+    <div class="module-details-content">
+        <div class="module-header">
+            <h1>Confiance en soi</h1>
+            <div class="module-meta">
+                <span class="module-date">Créé le 10/05/2025</span>
+                <span class="module-lessons">5 leçons</span>
+            </div>
+        </div>
+
+        <div class="module-description">
+            <h3>Description</h3>
+            <p>Ce module aide à développer la confiance en soi pour réussir sa reconversion professionnelle.</p>
+        </div>
+
+        <div class="module-content">
+            <h3>Contenu du module</h3>
+            
+            <div class="content-preview">
+                <!-- Exemple de contenu structuré -->
+                <div class="content-block heading-block">
+                    <h2>Introduction à la confiance en soi</h2>
+                </div>
+                
+                <div class="content-block paragraph-block">
+                    <p>La confiance en soi est un élément essentiel dans votre parcours de reconversion professionnelle. Elle vous permet de vous affirmer, de croire en vos capacités et de persévérer face aux défis.</p>
+                </div>
+                
+                <div class="content-block heading-block">
+                    <h2>Exercices pratiques</h2>
+                </div>
+                
+                <div class="content-block list-block">
+                    <ul>
+                        <li>Identifier ses forces et ses réussites passées</li>
+                        <li>Techniques de visualisation positive</li>
+                        <li>Exercices de communication assertive</li>
+                        <li>Journal de gratitude et d'affirmations</li>
+                    </ul>
+                </div>
+                
+                <div class="content-block heading-block">
+                    <h2>Témoignages inspirants</h2>
+                </div>
+                
+                <div class="content-block paragraph-block">
+                    <p>Découvrez les parcours de femmes qui ont réussi leur reconversion professionnelle grâce à une confiance en soi retrouvée et des techniques éprouvées.</p>
+                </div>
+                
+                <div class="content-block image-block">
+                    <img src="/images/confidence-workshop.jpg" alt="Atelier de confiance en soi">
+                    <p class="image-caption">Atelier de développement de la confiance en soi - Mai 2025</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-assignments">
+            <h3>Patientes inscrites à ce module</h3>
+            
+            <div class="patient-list">
+                <div class="patient-item">
+                    <div class="patient-info">
+                        <span class="patient-name">Sophie Martin</span>
+                        <span class="patient-email">sophie.martin@email.com</span>
+                    </div>
+                    <div class="patient-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%;"></div>
+                        </div>
+                        <span class="progress-text">75% complété</span>
+                    </div>
+                </div>
+                
+                <div class="patient-item">
+                    <div class="patient-info">
+                        <span class="patient-name">Laura Dubois</span>
+                        <span class="patient-email">laura.dubois@email.com</span>
+                    </div>
+                    <div class="patient-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%;"></div>
+                        </div>
+                        <span class="progress-text">40% complété</span>
+                    </div>
+                </div>
+                
+                <div class="patient-item">
+                    <div class="patient-info">
+                        <span class="patient-name">Julie Blanc</span>
+                        <span class="patient-email">julie.blanc@email.com</span>
+                    </div>
+                    <div class="patient-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%;"></div>
+                        </div>
+                        <span class="progress-text">90% complété</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestionnaire pour le bouton de suppression de module
+        const deleteButton = document.querySelector('.delete-module');
+        const popup = document.getElementById('validation-popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMessage = document.getElementById('popup-message');
+        const popupCancel = document.getElementById('popup-cancel');
+        const popupConfirm = document.getElementById('popup-confirm');
+        
+        deleteButton.addEventListener('click', function() {
+            const moduleId = this.getAttribute('data-id');
+            
+            popupTitle.textContent = 'Confirmation de suppression';
+            popupMessage.textContent = 'Êtes-vous sûr de vouloir supprimer ce module ? Cette action est irréversible.';
+            
+            popup.style.display = 'flex';
+            
+            popupCancel.onclick = function() {
+                popup.style.display = 'none';
+            };
+            
+            popupConfirm.onclick = function() {
+                // Ici, ajoutez le code pour supprimer réellement le module
+                // par exemple, avec un appel fetch à votre API
+                console.log('Suppression du module ' + moduleId);
+                window.location.href = '/modules';
+            };
+        });
+    });
+</script>
+
+<%- include('../layouts/footer') %>
