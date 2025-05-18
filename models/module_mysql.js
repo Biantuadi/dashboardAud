@@ -8,9 +8,8 @@ const { query } = require('../config/database');
 // Fonction pour récupérer tous les modules
 const findAll = async () => {
   const sql = `
-    SELECT m.*, c.nom as categorie_nom, p.prenom as createur_prenom, p.nom as createur_nom
+    SELECT m.*, p.prenom as createur_prenom, p.nom as createur_nom
     FROM module m 
-    LEFT JOIN categorie c ON m.categorie_id = c.id
     LEFT JOIN psychologue p ON m.cree_par = p.id
     ORDER BY m.date_creation DESC
   `;
@@ -20,9 +19,8 @@ const findAll = async () => {
 // Fonction pour récupérer un module par ID
 const findById = async (id) => {
   const sql = `
-    SELECT m.*, c.nom as categorie_nom, p.prenom as createur_prenom, p.nom as createur_nom
+    SELECT m.*, p.prenom as createur_prenom, p.nom as createur_nom
     FROM module m 
-    LEFT JOIN categorie c ON m.categorie_id = c.id
     LEFT JOIN psychologue p ON m.cree_par = p.id
     WHERE m.id = ?
   `;
@@ -30,25 +28,11 @@ const findById = async (id) => {
   return modules[0];
 };
 
-// Fonction pour récupérer les modules par catégorie
-const findByCategory = async (categoryId) => {
-  const sql = `
-    SELECT m.*, c.nom as categorie_nom, p.prenom as createur_prenom, p.nom as createur_nom
-    FROM module m 
-    LEFT JOIN categorie c ON m.categorie_id = c.id
-    LEFT JOIN psychologue p ON m.cree_par = p.id
-    WHERE m.categorie_id = ?
-    ORDER BY m.date_creation DESC
-  `;
-  return await query(sql, [categoryId]);
-};
-
 // Fonction pour récupérer les modules publiés
 const findPublished = async () => {
   const sql = `
-    SELECT m.*, c.nom as categorie_nom, p.prenom as createur_prenom, p.nom as createur_nom
+    SELECT m.*, p.prenom as createur_prenom, p.nom as createur_nom
     FROM module m 
-    LEFT JOIN categorie c ON m.categorie_id = c.id
     LEFT JOIN psychologue p ON m.cree_par = p.id
     WHERE m.est_publie = 1
     ORDER BY m.date_creation DESC
@@ -59,9 +43,8 @@ const findPublished = async () => {
 // Fonction pour récupérer les modules gratuits
 const findFree = async () => {
   const sql = `
-    SELECT m.*, c.nom as categorie_nom, p.prenom as createur_prenom, p.nom as createur_nom
+    SELECT m.*, p.prenom as createur_prenom, p.nom as createur_nom
     FROM module m 
-    LEFT JOIN categorie c ON m.categorie_id = c.id
     LEFT JOIN psychologue p ON m.cree_par = p.id
     WHERE m.est_gratuit = 1
     ORDER BY m.date_creation DESC
@@ -71,54 +54,48 @@ const findFree = async () => {
 
 // Fonction pour créer un module
 const create = async (moduleData) => {
-  const { titre, description, categorie_id, miniature, est_publie, est_gratuit, duree_estimee, cree_par } = moduleData;
-  
+  const { titre, description, miniature, est_publie, est_gratuit, duree_estimee, cree_par } = moduleData;
   const sql = `
     INSERT INTO module 
-    (titre, description, categorie_id, miniature, est_publie, est_gratuit, duree_estimee, cree_par) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    (titre, description, miniature, est_publie, est_gratuit, duree_estimee, cree_par) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
-  
   const result = await query(sql, [
-    titre, 
-    description, 
-    categorie_id, 
-    miniature || '/images/default-module.png', 
-    est_publie ? 1 : 0, 
-    est_gratuit ? 1 : 0, 
-    duree_estimee || 0, 
+    titre,
+    description,
+    miniature || '/images/default-module.png',
+    est_publie ? 1 : 0,
+    est_gratuit ? 1 : 0,
+    duree_estimee || 0,
     cree_par
   ]);
-  
-  return {
-    id: result.insertId,
-    ...moduleData
-  };
+   
+   return {
+     id: result.insertId,
+     ...moduleData
+   };
 };
 
 // Fonction pour mettre à jour un module
 const update = async (id, moduleData) => {
-  const { titre, description, categorie_id, miniature, est_publie, est_gratuit, duree_estimee } = moduleData;
-  
+  const { titre, description, miniature, est_publie, est_gratuit, duree_estimee } = moduleData;
   const sql = `
     UPDATE module 
-    SET titre = ?, description = ?, categorie_id = ?, miniature = ?, 
+    SET titre = ?, description = ?, miniature = ?, 
         est_publie = ?, est_gratuit = ?, duree_estimee = ?
     WHERE id = ?
   `;
-  
   await query(sql, [
-    titre, 
-    description, 
-    categorie_id, 
-    miniature || '/images/default-module.png', 
-    est_publie ? 1 : 0, 
-    est_gratuit ? 1 : 0, 
-    duree_estimee || 0, 
+    titre,
+    description,
+    miniature || '/images/default-module.png',
+    est_publie ? 1 : 0,
+    est_gratuit ? 1 : 0,
+    duree_estimee || 0,
     id
   ]);
-  
-  return findById(id);
+   
+   return findById(id);
 };
 
 // Fonction pour supprimer un module
@@ -204,7 +181,6 @@ const getBlockTypes = async () => {
 module.exports = {
   findAll,
   findById,
-  findByCategory,
   findPublished,
   findFree,
   create,

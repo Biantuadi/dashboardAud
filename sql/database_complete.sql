@@ -1,12 +1,15 @@
 -- Base de données pour le Dashboard Les Audacieuses
 -- Script complet pour initialiser toutes les tables
 
+-- Désactivation des vérifications de clés étrangères
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Suppression des tables existantes si elles existent
 DROP TABLE IF EXISTS `module_patient`;
 DROP TABLE IF EXISTS `contenu_bloc`;
 DROP TABLE IF EXISTS `bloc`;
 DROP TABLE IF EXISTS `module`;
-DROP TABLE IF EXISTS `categorie`;
+-- DROP TABLE IF EXISTS `categorie`; -- Table catégorie supprimée
 DROP TABLE IF EXISTS `utilisateur`;
 DROP TABLE IF EXISTS `psychologue`;
 DROP TABLE IF EXISTS `rendez_vous`;
@@ -52,18 +55,6 @@ CREATE TABLE `utilisateur` (
 
 -- --------------------------------------------------------
 --
--- Structure de la table `categorie`
---
-
-CREATE TABLE `categorie` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(100) NOT NULL,
-  `description` text DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
---
 -- Structure de la table `module`
 --
 
@@ -71,7 +62,6 @@ CREATE TABLE `module` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `titre` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
-  `categorie_id` int(11) NOT NULL,
   `miniature` varchar(255) DEFAULT '/images/default-module.png',
   `est_publie` tinyint(1) NOT NULL DEFAULT 0,
   `est_gratuit` tinyint(1) NOT NULL DEFAULT 0,
@@ -79,9 +69,7 @@ CREATE TABLE `module` (
   `cree_par` int(11) DEFAULT NULL,
   `date_creation` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
-  KEY `fk_module_categorie` (`categorie_id`),
   KEY `fk_module_psychologue` (`cree_par`),
-  CONSTRAINT `fk_module_categorie` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_module_psychologue` FOREIGN KEY (`cree_par`) REFERENCES `psychologue` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -161,6 +149,11 @@ CREATE TABLE `rendez_vous` (
 
 -- --------------------------------------------------------
 --
+-- Réactivation des vérifications de clés étrangères
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- --------------------------------------------------------
+--
 -- Insertion des données initiales
 --
 
@@ -168,17 +161,13 @@ CREATE TABLE `rendez_vous` (
 INSERT INTO `psychologue` (`nom`, `prenom`, `email`, `mot_de_passe`, `telephone`) VALUES
 ('Admin', 'Psychologue', 'admin@lesaudacieuses.fr', 'admin123', '0123456789');
 
--- Insertion des catégories de modules
-INSERT INTO `categorie` (`nom`, `description`) VALUES
-('Développement personnel', 'Modules pour développer la confiance en soi et les compétences personnelles'),
-('Compétences professionnelles', 'Modules pour améliorer les compétences professionnelles'),
-('Reconversion', 'Modules spécifiques à la reconversion professionnelle');
+-- Suppression de l'insertion des catégories de modules (table catégorie supprimée)
 
 -- Insertion des modules de base
-INSERT INTO `module` (`titre`, `description`, `categorie_id`, `est_publie`, `est_gratuit`, `duree_estimee`, `cree_par`) VALUES
-('Confiance en soi', 'Module pour développer sa confiance en soi', 1, 1, 1, 60, 1),
-('Préparation à l\'entretien', 'Techniques pour réussir ses entretiens d\'embauche', 2, 1, 1, 45, 1),
-('CV et lettre de motivation', 'Rédiger un CV et une lettre de motivation efficaces', 2, 1, 1, 30, 1);
+INSERT INTO `module` (`titre`, `description`, `miniature`, `est_publie`, `est_gratuit`, `duree_estimee`, `cree_par`) VALUES
+('Confiance en soi', 'Module pour développer sa confiance en soi', '/images/default-module.png', 1, 1, 60, 1),
+('Préparation à l''entretien', 'Techniques pour réussir ses entretiens d''embauche', '/images/default-module.png', 1, 1, 45, 1),
+('CV et lettre de motivation', 'Rédiger un CV et une lettre de motivation efficaces', '/images/default-module.png', 1, 1, 30, 1);
 
 -- Insertion des types de blocs
 INSERT INTO `bloc` (`type`) VALUES

@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <form id="module-form" class="module-form" method="POST" action="/modules/add">
+    <form id="module-form" class="module-form" method="POST" action="/modules/add" enctype="multipart/form-data">
         <div class="form-section">
             <div class="form-group">
                 <label for="title">Titre du module</label>
@@ -20,15 +20,13 @@
                 <label for="description">Description</label>
                 <textarea id="description" name="description" rows="3" placeholder="Décrivez brièvement ce module"></textarea>
             </div>
-            <!-- Sélection de la catégorie -->
             <div class="form-group">
-                <label for="category">Catégorie</label>
-                <select id="category" name="category_id" required>
-                    <option value="">-- Choisissez une catégorie --</option>
-                    <% categories.forEach(function(cat) { %>
-                        <option value="<%= cat.id %>"><%= cat.nom %></option>
-                    <% }); %>
-                </select>
+                <label for="thumbnail">Image du module</label>
+                <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="estimatedDuration">Durée estimée (minutes)</label>
+                <input type="number" id="estimatedDuration" name="estimatedDuration" min="0" placeholder="Entrez la durée en minutes">
             </div>
             <!-- Options publication et gratuité -->
             <div class="form-group inline-checkboxes">
@@ -56,7 +54,11 @@
         </div>
 
         <input type="hidden" id="content-json" name="content" value="[]">
-    </form>
+        <!-- Bottom save button -->
+        <div class="form-actions-bottom">
+          <button type="submit" form="module-form" class="btn-primary">Enregistrer</button>
+        </div>
+      </form>
 
     <!-- Menu contextuel pour les types de blocs -->
     <div id="block-menu" class="block-menu" style="display: none;">

@@ -31,93 +31,50 @@
     </div>
 
     <div class="modules-grid">
+        <% modules.forEach(function(mod) { %>
         <div class="module-card">
+            <div class="module-card-image">
+                <img src="<%= mod.miniature %>" alt="Miniature de <%= mod.titre %>">
+            </div>
             <div class="module-card-header">
-                <h3>Confiance en soi</h3>
+                <h3><%= mod.titre %></h3>
                 <div class="module-actions">
-                    <a href="/modules/1" class="btn-action">
+                    <a href="/modules/<%= mod.id %>" class="btn-action">
                         <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
                     </a>
-                    <a href="/modules/1/edit" class="btn-action">
+                    <a href="/modules/<%= mod.id %>/edit" class="btn-action">
                         <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
                     </a>
-                    <button class="btn-action delete-module" data-id="1">
+                    <button class="btn-action delete-module" data-id="<%= mod.id %>">
                         <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
                     </button>
                 </div>
             </div>
             <div class="module-card-content">
-                <p>Ce module aide à développer la confiance en soi pour réussir sa reconversion professionnelle.</p>
+                <p><%= mod.description %></p>
             </div>
             <div class="module-card-footer">
-                <span class="module-date">Créé le 10/05/2025</span>
-                <span class="module-lessons">5 leçons</span>
+                <span class="module-date">Créé le <%= new Date(mod.date_creation).toLocaleDateString('fr-FR') %></span>
+                <span class="module-duration">Durée : <%= mod.duree_estimee %> min</span>
             </div>
         </div>
-
-        <div class="module-card">
-            <div class="module-card-header">
-                <h3>Gestion du stress</h3>
-                <div class="module-actions">
-                    <a href="/modules/2" class="btn-action">
-                        <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
-                    </a>
-                    <a href="/modules/2/edit" class="btn-action">
-                        <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
-                    </a>
-                    <button class="btn-action delete-module" data-id="2">
-                        <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
-                    </button>
-                </div>
-            </div>
-            <div class="module-card-content">
-                <p>Techniques efficaces pour gérer le stress pendant la période de reconversion professionnelle.</p>
-            </div>
-            <div class="module-card-footer">
-                <span class="module-date">Créé le 08/05/2025</span>
-                <span class="module-lessons">4 leçons</span>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-card-header">
-                <h3>Préparation à l'entretien</h3>
-                <div class="module-actions">
-                    <a href="/modules/3" class="btn-action">
-                        <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
-                    </a>
-                    <a href="/modules/3/edit" class="btn-action">
-                        <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
-                    </a>
-                    <button class="btn-action delete-module" data-id="3">
-                        <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
-                    </button>
-                </div>
-            </div>
-            <div class="module-card-content">
-                <p>Conseils et exercices pratiques pour réussir vos entretiens d'embauche dans votre nouveau domaine.</p>
-            </div>
-            <div class="module-card-footer">
-                <span class="module-date">Créé le 02/05/2025</span>
-                <span class="module-lessons">6 leçons</span>
-            </div>
-        </div>
+        <% }); %>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Gestionnaire pour le bouton de suppression de module
         const deleteButtons = document.querySelectorAll('.delete-module');
-        const popup = document.getElementById('validation-popup');
-        const popupTitle = document.getElementById('popup-title');
-        const popupMessage = document.getElementById('popup-message');
-        const popupCancel = document.getElementById('popup-cancel');
-        const popupConfirm = document.getElementById('popup-confirm');
         
         deleteButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const moduleId = this.getAttribute('data-id');
+                // Select popup elements when needed
+                const popup = document.getElementById('validation-popup');
+                const popupTitle = document.getElementById('popup-title');
+                const popupMessage = document.getElementById('popup-message');
+                const popupCancel = document.getElementById('popup-cancel');
+                const popupConfirm = document.getElementById('popup-confirm');
                 
                 popupTitle.textContent = 'Confirmation de suppression';
                 popupMessage.textContent = 'Êtes-vous sûr de vouloir supprimer ce module ? Cette action est irréversible.';
@@ -129,10 +86,12 @@
                 };
                 
                 popupConfirm.onclick = function() {
-                    // Ici, ajoutez le code pour supprimer réellement le module
-                    // par exemple, avec un appel fetch à votre API
-                    console.log('Suppression du module ' + moduleId);
-                    popup.style.display = 'none';
+                    // Create and submit form to delete module
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/modules/' + moduleId + '/delete';
+                    document.body.appendChild(form);
+                    form.submit();
                 };
             });
         });

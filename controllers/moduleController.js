@@ -8,12 +8,6 @@ const Patient = require('../models/patient');
 const { query } = require('../config/database');
 const ModuleAssignment = require('../models/moduleAssignment');
 
-// Fonction utilitaire pour récupérer toutes les catégories
-const getAllCategories = async () => {
-  const sql = 'SELECT * FROM categorie ORDER BY nom';
-  return await query(sql);
-};
-
 // Afficher la liste des modules
 exports.getModules = async (req, res) => {
   try {
@@ -38,16 +32,12 @@ exports.getModules = async (req, res) => {
 exports.getAddModuleForm = async (req, res) => {
   try {
     // Récupérer toutes les catégories
-    const categories = await getAllCategories();
-    
-    // Récupérer tous les types de blocs
     const blockTypes = await Module.getBlockTypes();
     
     res.render('modules/add', {
       title: 'Ajouter un module',
       active: 'modules',
       module: {},
-      categories,
       blockTypes
     });
   } catch (error) {
@@ -66,30 +56,46 @@ exports.addModule = async (req, res) => {
     const moduleData = {
       titre: req.body.title,
       description: req.body.description,
-      categorie_id: parseInt(req.body.category_id),
-      miniature: req.body.thumbnail || '/images/default-module.png',
+      miniature: req.file ? `/uploads/modules/${req.file.filename}` : '/images/default-module.png',
       est_publie: req.body.isPublished === 'on',
       est_gratuit: req.body.isFree === 'on',
       duree_estimee: parseInt(req.body.estimatedDuration || 0),
       cree_par: req.session.user.id
     };
-    
     const newModule = await Module.create(moduleData);
-    
-    // Si des contenus sont fournis, les ajouter
-    if (req.body.content && Array.isArray(req.body.content)) {
-      for (let i = 0; i < req.body.content.length; i++) {
-        const content = req.body.content[i];
+
+    // Mapper types front->DB
+    const frontToDb = { heading: 'titre', paragraph: 'texte', list: 'liste', image: 'image' };
+    // Récupérer mapping bloc IDs
+    const blocTypes = await Module.getBlockTypes();
+
+    // Parse content JSON
+    let contentItems = [];
+    if (req.body.content) {
+      try { contentItems = JSON.parse(req.body.content); } catch {}      
+    }
+    if (Array.isArray(contentItems)) {
+      for (let i = 0; i < contentItems.length; i++) {
+        const item = contentItems[i];
+        const dbType = frontToDb[item.type] || item.type;
+        // Trouver bloc_id correspondant
+        const bloc = blocTypes.find(b => b.type === dbType);
+        if (!bloc) continue;
+        // Préparer contenu textuel
+        let contenu = '';
+        if (Array.isArray(item.content)) {
+          contenu = item.content.map(val => `- ${val}`).join('\n');
+        } else if (typeof item.content === 'string') {
+          contenu = item.content;
+        }
         await Module.addContentBlock(newModule.id, {
-          bloc_id: content.type,
-          contenu: content.text,
-          url_ressource: content.url || null,
+          bloc_id: bloc.id,
+          contenu: contenu,
+          url_ressource: item.url || null,
           ordre: i + 1
         });
       }
     }
-    
-    // Rediriger vers la liste des modules
     res.redirect('/modules');
   } catch (error) {
     console.error('Erreur lors de la création du module:', error);
@@ -116,6 +122,7 @@ exports.getModuleDetails = async (req, res) => {
     
     // Récupérer le contenu du module
     const moduleContent = await Module.getModuleContent(module.id);
+    console.log('DEBUG moduleContent:', moduleContent);
     
     // Récupérer les patients assignés à ce module
     const assignedPatients = await ModuleAssignment.getPatientsAssignedToModule(module.id);
@@ -157,15 +164,11 @@ exports.getEditModuleForm = async (req, res) => {
     // Récupérer le contenu du module
     const moduleContent = await Module.getModuleContent(module.id);
     
-    // Récupérer toutes les catégories
-    const categories = await getAllCategories();
-    
     res.render('modules/edit', {
       title: 'Modifier le module',
       active: 'modules',
       module,
-      moduleContent,
-      categories
+      moduleContent
     });
   } catch (error) {
     console.error('Erreur lors de la récupération du module à modifier:', error);
@@ -181,42 +184,50 @@ exports.getEditModuleForm = async (req, res) => {
 exports.updateModule = async (req, res) => {
   try {
     const { id } = req.params;
-    
     const moduleData = {
       titre: req.body.title,
       description: req.body.description,
-      categorie_id: parseInt(req.body.category_id),
-      miniature: req.body.thumbnail || '/images/default-module.png',
+      miniature: req.file ? `/uploads/modules/${req.file.filename}` : '/images/default-module.png',
       est_publie: req.body.isPublished === 'on',
       est_gratuit: req.body.isFree === 'on',
       duree_estimee: parseInt(req.body.estimatedDuration || 0)
     };
-    
-    // Mettre à jour les informations du module
     await Module.update(id, moduleData);
-    
-    // Si la mise à jour du contenu est demandée
+
     if (req.body.updateContent === 'true') {
-      // Supprimer tous les blocs existants et les recréer
       const existingBlocks = await Module.getModuleContent(id);
       for (const block of existingBlocks) {
         await Module.removeContentBlock(block.id);
       }
-      
-      // Ajouter les nouveaux blocs
-      if (req.body.content && Array.isArray(req.body.content)) {
-        for (let i = 0; i < req.body.content.length; i++) {
-          const content = req.body.content[i];
+      // Récupérer mapping bloc IDs
+      const frontToDb = { heading: 'titre', paragraph: 'texte', list: 'liste', image: 'image' };
+      const blocTypes = await Module.getBlockTypes();
+      // Parse content JSON
+      let contentItems = [];
+      if (req.body.content) {
+        try { contentItems = JSON.parse(req.body.content); } catch {}
+      }
+      if (Array.isArray(contentItems)) {
+        for (let i = 0; i < contentItems.length; i++) {
+          const item = contentItems[i];
+          const dbType = frontToDb[item.type] || item.type;
+          const bloc = blocTypes.find(b => b.type === dbType);
+          if (!bloc) continue;
+          let contenu = '';
+          if (Array.isArray(item.content)) {
+            contenu = item.content.map(val => `- ${val}`).join('\n');
+          } else if (typeof item.content === 'string') {
+            contenu = item.content;
+          }
           await Module.addContentBlock(id, {
-            bloc_id: content.type,
-            contenu: content.text,
-            url_ressource: content.url || null,
+            bloc_id: bloc.id,
+            contenu: contenu,
+            url_ressource: item.url || null,
             ordre: i + 1
           });
         }
       }
     }
-    
     res.redirect(`/modules/${id}`);
   } catch (error) {
     console.error('Erreur lors de la mise à jour du module:', error);

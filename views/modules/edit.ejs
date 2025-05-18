@@ -1,24 +1,35 @@
 <%- include('../layouts/header', { title: 'Modifier un module', active: 'modules' }) %>
+<% const typeMap = { 'titre': 'heading', 'texte': 'paragraph', 'liste': 'list', 'image': 'image' }; %>
 
 <div class="module-edit-page">
     <div class="page-header">
         <h2>Modifier le module</h2>
         <div class="header-actions">
-            <a href="/modules/1" class="btn-secondary">Annuler</a>
+            <a href="/modules" class="btn-secondary">Annuler</a>
             <button type="submit" form="module-form" class="btn-primary">Enregistrer</button>
         </div>
     </div>
 
-    <form id="module-form" class="module-form" method="POST" action="/modules/1/edit">
+    <form id="module-form" class="module-form" method="POST" action="/modules/<%= module.id %>/edit" enctype="multipart/form-data">
+        <!-- Signal content update to controller -->
+        <input type="hidden" name="updateContent" value="true">
+
         <div class="form-section">
             <div class="form-group">
                 <label for="title">Titre du module</label>
-                <input type="text" id="title" name="title" required value="Confiance en soi">
+                <input type="text" id="title" name="title" required value="<%= module.titre %>">
             </div>
             
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea id="description" name="description" rows="3">Ce module aide à développer la confiance en soi pour réussir sa reconversion professionnelle.</textarea>
+                <textarea id="description" name="description" rows="3"><%= module.description %></textarea>
+            </div>
+            <div class="form-group">
+                <label for="thumbnail">Image du module</label>
+                <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+                <% if (module.miniature) { %>
+                <img src="<%= module.miniature %>" alt="Aperçu" class="thumbnail-preview" style="max-width:150px;margin-top:10px;">
+                <% } %>
             </div>
         </div>
 
@@ -28,59 +39,35 @@
             
             <div class="content-editor">
                 <div class="content-blocks" id="content-blocks">
-                    <!-- Les blocs existants seront chargés ici dynamiquement -->
-                    <div class="content-block heading-block" id="block-1" data-type="heading">
-                        <div class="block-controls">
-                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
-                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
-                        </div>
-                        <input type="text" class="heading-input" value="Introduction à la confiance en soi">
-                    </div>
-                    
-                    <div class="content-block paragraph-block" id="block-2" data-type="paragraph">
-                        <div class="block-controls">
-                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
-                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
-                        </div>
-                        <textarea class="paragraph-input">La confiance en soi est un élément essentiel dans votre parcours de reconversion professionnelle. Elle vous permet de vous affirmer, de croire en vos capacités et de persévérer face aux défis.</textarea>
-                    </div>
-                    
-                    <div class="content-block heading-block" id="block-3" data-type="heading">
-                        <div class="block-controls">
-                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
-                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
-                        </div>
-                        <input type="text" class="heading-input" value="Exercices pratiques">
-                    </div>
-                    
-                    <div class="content-block list-block" id="block-4" data-type="list">
-                        <div class="block-controls">
-                            <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
-                            <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
-                        </div>
-                        <div class="list-items">
-                            <div class="list-item">
-                                <input type="text" value="Identifier ses forces et ses réussites passées">
-                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
+                    <!-- Dynamically render saved content blocks -->
+                    <% moduleContent.forEach(cb => { %>
+                        <% const typeMap = { 'titre':'heading', 'texte':'paragraph', 'liste':'list', 'image':'image' }; %>
+                        <% const t = typeMap[cb.type] || cb.type; %>
+                        <div class="content-block <%= t %>-block" id="block-<%= cb.id %>" data-type="<%= t %>">
+                            <div class="block-controls">
+                                <button type="button" class="btn-move"><img src="/images/Grab.svg" alt="Déplacer"></button>
+                                <button type="button" class="btn-delete"><img src="/images/Trash.svg" alt="Supprimer"></button>
                             </div>
-                            <div class="list-item">
-                                <input type="text" value="Techniques de visualisation positive">
-                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
-                            </div>
-                            <div class="list-item">
-                                <input type="text" value="Exercices de communication assertive">
-                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
-                            </div>
-                            <div class="list-item">
-                                <input type="text" value="Journal de gratitude et d'affirmations">
-                                <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
-                            </div>
-                            <div class="list-item">
-                                <input type="text" placeholder="Nouvel élément de liste">
-                                <button type="button" class="btn-add-item"><img src="/images/Plus.svg" alt="+"></button>
-                            </div>
+                            <% if (t === 'heading') { %>
+                                <input type="text" class="heading-input" value="<%= cb.contenu %>">
+                            <% } else if (t === 'paragraph') { %>
+                                <textarea class="paragraph-input"><%= cb.contenu %></textarea>
+                            <% } else if (t === 'list') { %>
+                                <div class="list-items">
+                                    <% cb.contenu.split('\n').filter(item=>item).forEach(item=>{ %>
+                                        <div class="list-item">
+                                            <input type="text" value="<%= item.replace(/^-\s*/,'') %>">
+                                            <button type="button" class="btn-remove-item"><img src="/images/Trash.svg" alt="-"></button>
+                                        </div>
+                                    <% }) %>
+                                    <div class="list-item">
+                                        <input type="text" placeholder="Nouvel élément de liste">
+                                        <button type="button" class="btn-add-item"><img src="/images/Plus.svg" alt="+"></button>
+                                    </div>
+                                </div>
+                            <% } %>
                         </div>
-                    </div>
+                    <% }) %>
                 </div>
                 
                 <div class="add-block-button">
@@ -92,12 +79,12 @@
             </div>
         </div>
 
-        <input type="hidden" id="content-json" name="content" value='[
-            {"id":"block-1","type":"heading","content":"Introduction à la confiance en soi"},
-            {"id":"block-2","type":"paragraph","content":"La confiance en soi est un élément essentiel dans votre parcours de reconversion professionnelle. Elle vous permet de vous affirmer, de croire en vos capacités et de persévérer face aux défis."},
-            {"id":"block-3","type":"heading","content":"Exercices pratiques"},
-            {"id":"block-4","type":"list","content":["Identifier ses forces et ses réussites passées","Techniques de visualisation positive","Exercices de communication assertive","Journal de gratitude et d'affirmations"]}
-        ]'>
+        <input type="hidden" id="content-json" name="content" value='<%- JSON.stringify(moduleContent.map(cb => ({ id: `block-${cb.id}`, type: typeMap[cb.type] || cb.type, content: cb.type === 'liste' ? cb.contenu.split("\n").filter(i => i) : cb.contenu, url: cb.url_ressource || "", ordre: cb.ordre }))) %>'>
+
+        <!-- Bottom save button -->
+        <div class="form-actions-bottom">
+          <button type="submit" form="module-form" class="btn-primary">Enregistrer</button>
+        </div>
     </form>
 
     <!-- Menu contextuel pour les types de blocs -->
