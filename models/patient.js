@@ -1,141 +1,119 @@
 /**
- * Modèle de données pour les patientes
+ * Modèle de données pour les patientes (utilisatrices)
+ * Utilise la table 'utilisateur' dans MySQL
  */
 
-const mongoose = require('mongoose');
+const { query } = require('../config/database');
 
-const patientSchema = new mongoose.Schema({
-  firstname: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  lastname: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    match: [/.+\@.+\..+/, 'Veuillez fournir une adresse email valide']
-  },
-  phone: {
-    type: String,
-    trim: true
-  },
-  birthdate: {
-    type: Date
-  },
-  profession: {
-    type: String,
-    trim: true
-  },
-  situation: {
-    type: String,
-    enum: ['en activité', 'en recherche d\'emploi', 'en congé parental', 'étudiante', 'autre'],
-    default: 'autre'
-  },
-  children: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  goals: {
-    type: [String],
-    default: []
-  },
-  notes: {
-    type: String
-  },
-  avatar: {
-    type: String,
-    default: '/images/default-avatar.png'
-  },
-  assignedModules: [{
-    module: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Module'
-    },
-    assignedAt: {
-      type: Date,
-      default: Date.now
-    },
-    completedAt: {
-      type: Date
-    },
-    progress: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 100
-    }
-  }],
-  appointments: [{
-    date: {
-      type: Date,
-      required: true
-    },
-    duration: {
-      type: Number, // en minutes
-      default: 60
-    },
-    type: {
-      type: String,
-      enum: ['présentiel', 'visio', 'téléphone'],
-      default: 'présentiel'
-    },
-    notes: {
-      type: String
-    },
-    status: {
-      type: String,
-      enum: ['planifié', 'confirmé', 'annulé', 'terminé'],
-      default: 'planifié'
-    }
-  }],
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'archived'],
-    default: 'active'
-  }
-}, { timestamps: true });
-
-// Méthodes virtuelles
-patientSchema.virtual('fullName').get(function() {
-  return `${this.firstname} ${this.lastname}`;
-});
-
-patientSchema.virtual('age').get(function() {
-  if (!this.birthdate) return null;
-  const ageDiffMs = Date.now() - this.birthdate.getTime();
-  const ageDate = new Date(ageDiffMs);
-  return Math.abs(ageDate.getUTCFullYear() - 1970);
-});
-
-// Méthodes d'instance
-patientSchema.methods.getCompletedModules = function() {
-  return this.assignedModules.filter(module => module.completedAt);
+// Fonction pour récupérer tous les patients
+const findAll = async () => {
+  const sql = 'SELECT * FROM utilisateur ORDER BY date_inscription DESC';
+  return await query(sql);
 };
 
-patientSchema.methods.getActiveModules = function() {
-  return this.assignedModules.filter(module => !module.completedAt && module.progress > 0);
+// Fonction pour récupérer un patient par ID
+const findById = async (id) => {
+  const sql = 'SELECT * FROM utilisateur WHERE id = ?';
+  const patients = await query(sql, [id]);
+  return patients[0];
 };
 
-patientSchema.methods.getUpcomingAppointments = function() {
-  const now = new Date();
-  return this.appointments
-    .filter(apt => apt.date > now && apt.status !== 'annulé')
-    .sort((a, b) => a.date - b.date);
+// Fonction pour récupérer un patient par email
+const findByEmail = async (email) => {
+  const sql = 'SELECT * FROM utilisateur WHERE email = ?';
+  const patients = await query(sql, [email]);
+  return patients[0];
 };
 
-// Configuration pour inclure les virtuals dans la conversion JSON
-patientSchema.set('toJSON', { virtuals: true });
-patientSchema.set('toObject', { virtuals: true });
+// Fonction pour créer un nouveau patient
+const create = async (patientData) => {
+  const { nom, prenom, email, telephone, mot_de_passe, emploi_actuel, emploi_vise, competences, experience, notes } = patientData;
+  
+  const sql = `
+    INSERT INTO utilisateur 
+    (nom, prenom, email, telephone, mot_de_passe, emploi_actuel, emploi_vise, competences, experience, notes) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  
+  const result = await query(sql, [
+    nom, 
+    prenom, 
+    email, 
+    telephone, 
+    mot_de_passe,
+    emploi_actuel || null,
+    emploi_vise || null,
+    competences || null,
+    experience || null,
+    notes || null
+  ]);
+  
+  return {
+    id: result.insertId,
+    ...patientData
+  };
+};
 
-const Patient = mongoose.model('Patient', patientSchema);
+// Fonction pour mettre à jour un patient
+const update = async (id, patientData) => {
+  const { nom, prenom, email, telephone, emploi_actuel, emploi_vise, competences, experience, notes } = patientData;
+  
+  const sql = `
+    UPDATE utilisateur 
+    SET nom = ?, prenom = ?, email = ?, telephone = ?, 
+        emploi_actuel = ?, emploi_vise = ?, competences = ?, 
+        experience = ?, notes = ?
+    WHERE id = ?
+  `;
+  
+  await query(sql, [
+    nom, 
+    prenom, 
+    email, 
+    telephone, 
+    emploi_actuel || null,
+    emploi_vise || null,
+    competences || null,
+    experience || null,
+    notes || null,
+    id
+  ]);
+  
+  return findById(id);
+};
 
-module.exports = Patient;
+// Fonction pour supprimer un patient
+const remove = async (id) => {
+  const sql = 'DELETE FROM utilisateur WHERE id = ?';
+  return await query(sql, [id]);
+};
+
+// Fonctions utilitaires pour compatibilité avec l'ancienne API
+const getFullName = (patient) => {
+  return `${patient.prenom} ${patient.nom}`;
+};
+
+// Fonction pour récupérer les rendez-vous à venir d'un patient
+const getUpcomingAppointments = async (patientId) => {
+  const sql = `
+    SELECT rv.*, p.nom as psychologue_nom, p.prenom as psychologue_prenom
+    FROM rendez_vous rv
+    JOIN psychologue p ON rv.psychologue_id = p.id
+    WHERE rv.patient_id = ? 
+    AND rv.date_heure > NOW()
+    AND rv.statut IN ('planifié', 'confirmé')
+    ORDER BY rv.date_heure ASC
+  `;
+  return await query(sql, [patientId]);
+};
+
+module.exports = {
+  findAll,
+  findById,
+  findByEmail,
+  create,
+  update,
+  remove,
+  getFullName,
+  getUpcomingAppointments
+};

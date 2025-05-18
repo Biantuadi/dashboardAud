@@ -10,9 +10,14 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 require('dotenv').config();
 
-// Note: Connexion à la base de données désactivée pour le moment
-// const connectDB = require('./config/database');
-// connectDB();
+// Connexion à la base de données MySQL
+const { connectDB } = require('./config/database');
+// Initialisation de la connexion
+connectDB().then(() => {
+  console.log('Base de données MySQL connectée!');
+}).catch(err => {
+  console.error('Erreur de connexion à la base de données:', err);
+});
 
 // Initialisation de l'application Express
 const app = express();

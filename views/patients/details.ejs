@@ -1,7 +1,6 @@
 <%- include('../layouts/header', { title: 'Détails de la patiente', active: 'patients' }) %>
 
-<div class="patient-details-page">
-    <div class="page-header">
+<div class="patient-details-page">    <div class="page-header">
         <div class="header-actions">
             <a href="/patients" class="btn-back">
                 <img src="/images/arrow_back.svg" alt="Retour" class="icon-small">
@@ -9,11 +8,11 @@
             </a>
         </div>
         <div class="header-actions-right">
-            <a href="/patients/1/edit" class="btn-secondary">
+            <a href="/patients/<%= patient.id %>/edit" class="btn-secondary">
                 <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
                 Modifier
             </a>
-            <button class="btn-danger delete-patient" data-id="1">
+            <button class="btn-danger delete-patient" data-id="<%= patient.id %>">
                 <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
                 Supprimer
             </button>
@@ -22,71 +21,65 @@
 
     <div class="patient-details-content">
         <div class="patient-header">
-            <h1>Sophie Martin</h1>
-            <span class="patient-since">Cliente depuis le 12/05/2025</span>
-        </div>
-
-        <div class="patient-info-grid">
+            <h1><%= patient.prenom %> <%= patient.nom %></h1>
+            <span class="patient-since">Cliente depuis le <%= new Date(patient.date_inscription).toLocaleDateString('fr-FR') %></span>
+        </div>        <div class="patient-info-grid">
             <div class="info-card personal-info">
                 <h3>Informations personnelles</h3>
                 <div class="info-list">
                     <div class="info-item">
                         <span class="info-label">Email</span>
-                        <span class="info-value">sophie.martin@email.com</span>
+                        <span class="info-value"><%= patient.email %></span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Téléphone</span>
-                        <span class="info-value">06 12 34 56 78</span>
+                        <span class="info-value"><%= patient.telephone %></span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Date de naissance</span>
-                        <span class="info-value">15/03/1985</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Adresse</span>
-                        <span class="info-value">123 Rue de Paris, 75001 Paris</span>
+                        <span class="info-label">Date d'inscription</span>
+                        <span class="info-value"><%= new Date(patient.date_inscription).toLocaleDateString('fr-FR') %></span>
                     </div>
                 </div>
-            </div>
-
-            <div class="info-card professional-info">
+            </div>            <div class="info-card professional-info">
                 <h3>Profil professionnel</h3>
                 <div class="info-list">
                     <div class="info-item">
                         <span class="info-label">Emploi actuel</span>
-                        <span class="info-value">Assistante administrative</span>
+                        <span class="info-value"><%= patient.emploi_actuel || 'Non renseigné' %></span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Emploi visé</span>
-                        <span class="info-value">Développeuse web</span>
+                        <span class="info-value"><%= patient.emploi_vise || 'Non renseigné' %></span>
                     </div>
                     <div class="info-item full-width">
                         <span class="info-label">Compétences</span>
                         <span class="info-value">
-                            <div class="skills-list">
-                                <span class="skill-tag">Organisation</span>
-                                <span class="skill-tag">Communication</span>
-                                <span class="skill-tag">Pack Office</span>
-                                <span class="skill-tag">Anglais</span>
-                                <span class="skill-tag">HTML/CSS (débutant)</span>
-                            </div>
+                            <% if (patient.competences) { %>
+                                <div class="skills-list">
+                                    <% patient.competences.split(',').forEach(skill => { %>
+                                        <span class="skill-tag"><%= skill.trim() %></span>
+                                    <% }); %>
+                                </div>
+                            <% } else { %>
+                                Non renseignées
+                            <% } %>
                         </span>
                     </div>
                     <div class="info-item full-width">
                         <span class="info-label">Expérience</span>
                         <span class="info-value">
-                            8 ans d'expérience en tant qu'assistante administrative dans divers secteurs.
-                            Formation en ligne en développement web depuis 6 mois.
+                            <%= patient.experience || 'Non renseignée' %>
                         </span>
                     </div>
                 </div>
-            </div>
-
-            <div class="info-card notes-section">
+            </div>            <div class="info-card notes-section">
                 <h3>Notes personnelles</h3>
                 <div class="notes-content">
-                    <p>Sophie est très motivée pour sa reconversion. Elle a déjà commencé à apprendre le développement web en autodidacte et cherche à renforcer sa confiance en elle pour les entretiens d'embauche.</p>
-                    <p>Prochain rendez-vous prévu le 25/05/2025 pour faire le point sur sa progression.</p>
+                    <% if (patient.notes) { %>
+                        <p><%= patient.notes %></p>
+                    <% } else { %>
+                        <p>Aucune note disponible.</p>
+                    <% } %>
                 </div>
             </div>
 
@@ -97,44 +90,71 @@
                         <img src="/images/Plus.svg" alt="+" class="icon-small">
                         Assigner un module
                     </button>
+                </div>                <div class="modules-list">
+                    <% if (assignedModules && assignedModules.length > 0) { %>
+                        <% assignedModules.forEach(module => { %>
+                            <div class="module-progress-item">
+                                <div class="module-info">
+                                    <h4><%= module.titre %></h4>
+                                    <span class="date-assigned">Assigné le <%= new Date(module.date_assignation || module.date_assignment).toLocaleDateString('fr-FR') %></span>
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: <%= module.progression %>%"></div>
+                                    </div>
+                                    <span class="progress-text"><%= module.progression %>% complété</span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-modules">
+                            Aucun module assigné à cette patiente.
+                        </div>
+                    <% } %>
                 </div>
-                <div class="modules-list">
-                    <div class="module-progress-item">
-                        <div class="module-info">
-                            <h4>Confiance en soi</h4>
-                            <span class="date-assigned">Assigné le 12/05/2025</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+
+            <!-- Section for appointments -->
+            <div class="info-card appointments-section">
+                <div class="section-header">
+                    <h3>Rendez-vous à venir</h3>
+                    <button class="btn-outline btn-small add-appointment-btn">
+                        <img src="/images/Plus.svg" alt="+" class="icon-small">
+                        Ajouter un rendez-vous
+                    </button>
+                </div>
+                <div class="appointments-list">
+                    <% if (appointments && appointments.length > 0) { %>
+                        <% appointments.forEach(appointment => { %>
+                            <div class="appointment-item">
+                                <div class="appointment-info">
+                                    <div class="appointment-date">
+                                        <%= new Date(appointment.date_heure).toLocaleDateString('fr-FR') %> à 
+                                        <%= new Date(appointment.date_heure).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <span class="appointment-type"><%= appointment.type %></span>
+                                        <span class="appointment-duration"><%= appointment.duree %> min</span>
+                                        <span class="appointment-status status-<%= appointment.statut %>"><%= appointment.statut %></span>
+                                    </div>
+                                    <% if (appointment.notes) { %>
+                                        <div class="appointment-notes">
+                                            Notes: <%= appointment.notes %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="btn-text update-status" data-id="<%= appointment.id %>" data-status="<%= appointment.statut %>">
+                                        Changer le statut
+                                    </button>
+                                </div>
                             </div>
-                            <span class="progress-text">75% complété</span>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-appointments">
+                            Aucun rendez-vous à venir pour cette patiente.
                         </div>
-                    </div>
-                    <div class="module-progress-item">
-                        <div class="module-info">
-                            <h4>Préparation à l'entretien</h4>
-                            <span class="date-assigned">Assigné le 14/05/2025</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 40%"></div>
-                            </div>
-                            <span class="progress-text">40% complété</span>
-                        </div>
-                    </div>
-                    <div class="module-progress-item">
-                        <div class="module-info">
-                            <h4>CV et lettre de motivation</h4>
-                            <span class="date-assigned">Assigné le 14/05/2025</span>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 90%"></div>
-                            </div>
-                            <span class="progress-text">90% complété</span>
-                        </div>
-                    </div>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -146,18 +166,52 @@
     <div class="popup-content">
         <h3>Assigner un module</h3>
         <form id="assign-module-form">
-            <div class="form-group">
-                <label for="module-select">Sélectionner un module</label>
+            <div class="form-group">                <label for="module-select">Sélectionner un module</label>
                 <select id="module-select" name="module_id" required>
                     <option value="">-- Choisir un module --</option>
-                    <option value="2">Gestion du stress</option>
-                    <option value="5">Recherche d'emploi</option>
-                    <option value="6">Reconversion professionnelle</option>
+                    <% if (allModules && allModules.length > 0) { %>
+                        <% allModules.forEach(module => { %>
+                            <option value="<%= module.id %>"><%= module.titre %></option>
+                        <% }); %>
+                    <% } %>
                 </select>
             </div>
             <div class="popup-buttons">
                 <button type="button" id="cancel-assignment" class="btn-secondary">Annuler</button>
                 <button type="submit" class="btn-primary">Assigner</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Appointment creation popup -->
+<div id="appointment-creation-popup" class="popup-container" style="display: none;">
+    <div class="popup-content">
+        <h3>Ajouter un rendez-vous</h3>
+        <form id="create-appointment-form">
+            <div class="form-group">
+                <label for="appointment-date">Date et heure</label>
+                <input type="datetime-local" id="appointment-date" name="date_heure" required>
+            </div>
+            <div class="form-group">
+                <label for="appointment-type">Type de rendez-vous</label>
+                <select id="appointment-type" name="type" required>
+                    <option value="présentiel">Présentiel</option>
+                    <option value="visio">Visio</option>
+                    <option value="téléphone">Téléphone</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="appointment-duration">Durée (minutes)</label>
+                <input type="number" id="appointment-duration" name="duree" value="60" min="15" step="15" required>
+            </div>
+            <div class="form-group">
+                <label for="appointment-notes">Notes</label>
+                <textarea id="appointment-notes" name="notes" rows="3"></textarea>
+            </div>
+            <div class="popup-buttons">
+                <button type="button" id="cancel-appointment" class="btn-secondary">Annuler</button>
+                <button type="submit" class="btn-primary">Créer</button>
             </div>
         </form>
     </div>
@@ -206,8 +260,7 @@
         cancelAssignmentBtn.addEventListener('click', function() {
             modulePopup.style.display = 'none';
         });
-        
-        assignModuleForm.addEventListener('submit', function(e) {
+          assignModuleForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const moduleId = document.getElementById('module-select').value;
             
@@ -216,14 +269,86 @@
                 return;
             }
             
-            // Ici, ajoutez le code pour assigner le module à la patiente
-            // par exemple, avec un appel fetch à votre API
-            console.log('Assignation du module ' + moduleId + ' à la patiente 1');
+            // Récupérer l'ID du patient depuis l'URL
+            const patientId = '<%= patient.id %>';
             
-            // Simuler le succès de l'assignation
-            modulePopup.style.display = 'none';
-            alert('Module assigné avec succès !');
-            // Dans une application réelle, vous rechargeriez les données ou mettriez à jour l'UI
+            // Faire une requête pour assigner le module
+            fetch(`/patients/${patientId}/assign-module`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ module_id: moduleId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                modulePopup.style.display = 'none';
+                
+                if (data.success) {
+                    alert('Module assigné avec succès!');
+                    // Recharger la page pour afficher le nouveau module
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Une erreur est survenue lors de l\'assignation du module');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de l\'assignation du module');
+            });
+        });
+        
+        // Gestion du popup de création de rendez-vous
+        const addAppointmentBtn = document.querySelector('.add-appointment-btn');
+        const appointmentPopup = document.getElementById('appointment-creation-popup');
+        const cancelAppointmentBtn = document.getElementById('cancel-appointment');
+        const createAppointmentForm = document.getElementById('create-appointment-form');
+        
+        addAppointmentBtn.addEventListener('click', function() {
+            appointmentPopup.style.display = 'flex';
+        });
+        
+        cancelAppointmentBtn.addEventListener('click', function() {
+            appointmentPopup.style.display = 'none';
+        });
+        
+        createAppointmentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const dateHeure = document.getElementById('appointment-date').value;
+            const type = document.getElementById('appointment-type').value;
+            const duree = document.getElementById('appointment-duration').value;
+            const notes = document.getElementById('appointment-notes').value;
+            
+            // Récupérer l'ID du patient depuis l'URL
+            const patientId = '<%= patient.id %>';
+            
+            // Faire une requête pour créer le rendez-vous
+            fetch(`/patients/${patientId}/appointments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ date_heure: dateHeure, type, duree, notes })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appointmentPopup.style.display = 'none';
+                
+                if (data.success) {
+                    alert('Rendez-vous créé avec succès!');
+                    // Recharger la page pour afficher le nouveau rendez-vous
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Une erreur est survenue lors de la création du rendez-vous');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la création du rendez-vous');
+            });
         });
     });
 </script>

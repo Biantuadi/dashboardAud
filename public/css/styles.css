@@ -1,8 +1,8 @@
 /* Styles principaux du dashboard */
 :root {
-  --primary-color: #8E44AD;
-  --primary-light: #AF7AC5;
-  --primary-dark: #703688;
+  --primary-color: #EF7D4F;
+  --primary-light: #EF7D4F;
+  --primary-dark: #EF7D4F;
   --secondary-color: #3498DB;
   --success-color: #2ECC71;
   --danger-color: #E74C3C;
@@ -125,34 +125,81 @@ a:hover {
 .header-left {
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
-.logo {
-  margin-right: 20px;
+.header-center {
+  display: flex;
+  justify-content: center;
+  flex: 1;
 }
 
-.logo img {
-  height: 40px;
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
 }
 
-.header-left h1 {
-  font-size: 20px;
+.welcome-message {
+  font-size: 18px;
+  font-weight: 500;
   color: var(--primary-color);
 }
 
-.user-profile {
+.header-center {
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  text-align: center;
+}
+
+.logo img {
+  height: 45px;
+}
+
+.header-right {
   display: flex;
   align-items: center;
 }
 
-.user-name {
-  margin-right: 15px;
-  font-weight: 500;
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.logout-btn {
+.header-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  transition: var(--transition);
+}
+
+.header-nav a.active {
+  color: var(--primary-color);
+}
+
+.header-nav img {
+  width: 24px;
+  height: 24px;
+}
+
+.header-nav .logout-btn {
+  margin-left: 15px;
+  padding: 5px 10px;
+  border-radius: var(--border-radius);
+  background-color: var(--light-color);
   color: var(--text-color);
   font-size: 14px;
+}
+
+.header-nav .logout-btn:hover {
+  background-color: var(--primary-light);
+  color: white;
 }
 
 .content-wrapper {

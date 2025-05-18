@@ -9,11 +9,10 @@
     <div class="dashboard-stats">
         <div class="stat-card">
             <div class="stat-icon">
-                <img src="/images/person.svg" alt="Patientes">
-            </div>
+                <img src="/images/person.svg" alt="Patientes">            </div>
             <div class="stat-info">
                 <h3>Patientes</h3>
-                <p class="stat-count">25</p>
+                <p class="stat-count"><%= stats.patientCount %></p>
             </div>
         </div>
         <div class="stat-card">
@@ -22,7 +21,7 @@
             </div>
             <div class="stat-info">
                 <h3>Modules</h3>
-                <p class="stat-count">12</p>
+                <p class="stat-count"><%= stats.moduleCount %></p>
             </div>
         </div>
         <div class="stat-card">
@@ -41,20 +40,19 @@
             <div class="section-header">
                 <h3>Derniers modules</h3>
                 <a href="/modules" class="view-all">Voir tout</a>
-            </div>
-            <div class="recent-items">
-                <div class="module-item">
-                    <div class="module-title">Confiance en soi</div>
-                    <div class="module-date">Ajouté le 10/05/2025</div>
-                </div>
-                <div class="module-item">
-                    <div class="module-title">Gestion du stress</div>
-                    <div class="module-date">Ajouté le 08/05/2025</div>
-                </div>
-                <div class="module-item">
-                    <div class="module-title">Préparation à l'entretien</div>
-                    <div class="module-date">Ajouté le 02/05/2025</div>
-                </div>
+            </div>            <div class="recent-items">
+                <% if (recentModules && recentModules.length > 0) { %>
+                    <% recentModules.forEach(module => { %>
+                        <div class="module-item">
+                            <div class="module-title"><%= module.titre %></div>
+                            <div class="module-date">Ajouté le <%= new Date(module.date_creation).toLocaleDateString('fr-FR') %></div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="module-item">
+                        <div class="module-title">Aucun module trouvé</div>
+                    </div>
+                <% } %>
             </div>
         </div>
         
@@ -62,29 +60,24 @@
             <div class="section-header">
                 <h3>Dernières patientes</h3>
                 <a href="/patients" class="view-all">Voir tout</a>
-            </div>
-            <div class="recent-items">
-                <div class="patient-item">
-                    <div class="patient-info">
-                        <div class="patient-name">Sophie Martin</div>
-                        <div class="patient-email">sophie.martin@email.com</div>
+            </div>            <div class="recent-items">
+                <% if (recentPatients && recentPatients.length > 0) { %>
+                    <% recentPatients.forEach(patient => { %>
+                        <div class="patient-item">
+                            <div class="patient-info">
+                                <div class="patient-name"><%= patient.prenom %> <%= patient.nom %></div>
+                                <div class="patient-email"><%= patient.email %></div>
+                            </div>
+                            <div class="patient-date">Inscrite le <%= new Date(patient.date_inscription).toLocaleDateString('fr-FR') %></div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="patient-item">
+                        <div class="patient-info">
+                            <div class="patient-name">Aucune patiente trouvée</div>
+                        </div>
                     </div>
-                    <div class="patient-date">Inscrite le 12/05/2025</div>
-                </div>
-                <div class="patient-item">
-                    <div class="patient-info">
-                        <div class="patient-name">Laura Dubois</div>
-                        <div class="patient-email">laura.dubois@email.com</div>
-                    </div>
-                    <div class="patient-date">Inscrite le 05/05/2025</div>
-                </div>
-                <div class="patient-item">
-                    <div class="patient-info">
-                        <div class="patient-name">Julie Blanc</div>
-                        <div class="patient-email">julie.blanc@email.com</div>
-                    </div>
-                    <div class="patient-date">Inscrite le 01/05/2025</div>
-                </div>
+                <% } %>
             </div>
         </div>
     </div>

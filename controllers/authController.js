@@ -2,8 +2,8 @@
  * Contrôleur pour l'authentification
  */
 
-// Utilisation des données mockées au lieu de MongoDB
-const { findUserByEmail } = require('../config/mock-data');
+// Utiliser le modèle psychologue
+const Psychologue = require('../models/psychologue');
 
 // Afficher la page de connexion
 exports.getLoginPage = (req, res) => {
@@ -22,12 +22,17 @@ exports.getLoginPage = (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   
+  console.log(`Tentative de connexion depuis le contrôleur avec: email=${email}, password=${password}`);
+  
   try {
-    // Rechercher l'utilisateur par email dans les données mockées
-    const user = findUserByEmail(email);
+    // Vérifier les identifiants avec la base de données MySQL
+    const psychologue = await Psychologue.verifyCredentials(email, password);
+    
+    console.log('Résultat de verifyCredentials:', psychologue);
     
     // Vérifier si l'utilisateur existe et si le mot de passe est correct
-    if (!user || user.password !== password) {
+    if (!psychologue) {
+      console.log('Authentification échouée dans le contrôleur');
       return res.render('login', {
         title: 'Connexion',
         error: 'Email ou mot de passe incorrect'
@@ -36,12 +41,12 @@ exports.login = async (req, res) => {
     
     // Stocker les informations de l'utilisateur dans la session
     req.session.user = {
-      id: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar
+      id: psychologue.id,
+      firstname: psychologue.prenom,
+      lastname: psychologue.nom,
+      email: psychologue.email,
+      role: 'psychologue',
+      avatar: '/images/default-user.png'
     };
     
     // Rediriger vers le dashboard

@@ -20,6 +20,21 @@
                 <label for="description">Description</label>
                 <textarea id="description" name="description" rows="3" placeholder="Décrivez brièvement ce module"></textarea>
             </div>
+            <!-- Sélection de la catégorie -->
+            <div class="form-group">
+                <label for="category">Catégorie</label>
+                <select id="category" name="category_id" required>
+                    <option value="">-- Choisissez une catégorie --</option>
+                    <% categories.forEach(function(cat) { %>
+                        <option value="<%= cat.id %>"><%= cat.nom %></option>
+                    <% }); %>
+                </select>
+            </div>
+            <!-- Options publication et gratuité -->
+            <div class="form-group inline-checkboxes">
+                <label><input type="checkbox" name="isPublished"> Publier</label>
+                <label><input type="checkbox" name="isFree"> Gratuit</label>
+            </div>
         </div>
 
         <div class="form-section">

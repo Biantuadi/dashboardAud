@@ -42,97 +42,32 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Sophie Martin</td>
-                    <td>sophie.martin@email.com</td>
-                    <td>06 12 34 56 78</td>
-                    <td>12/05/2025</td>
-                    <td>3</td>
-                    <td class="patient-actions">
-                        <a href="/patients/1" class="btn-action" title="Voir">
-                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
-                        </a>
-                        <a href="/patients/1/edit" class="btn-action" title="Éditer">
-                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
-                        </a>
-                        <button class="btn-action delete-patient" data-id="1" title="Supprimer">
-                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Laura Dubois</td>
-                    <td>laura.dubois@email.com</td>
-                    <td>06 98 76 54 32</td>
-                    <td>05/05/2025</td>
-                    <td>2</td>
-                    <td class="patient-actions">
-                        <a href="/patients/2" class="btn-action" title="Voir">
-                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
-                        </a>
-                        <a href="/patients/2/edit" class="btn-action" title="Éditer">
-                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
-                        </a>
-                        <button class="btn-action delete-patient" data-id="2" title="Supprimer">
-                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Julie Blanc</td>
-                    <td>julie.blanc@email.com</td>
-                    <td>06 45 67 89 01</td>
-                    <td>01/05/2025</td>
-                    <td>4</td>
-                    <td class="patient-actions">
-                        <a href="/patients/3" class="btn-action" title="Voir">
-                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
-                        </a>
-                        <a href="/patients/3/edit" class="btn-action" title="Éditer">
-                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
-                        </a>
-                        <button class="btn-action delete-patient" data-id="3" title="Supprimer">
-                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Camille Durand</td>
-                    <td>camille.durand@email.com</td>
-                    <td>06 78 90 12 34</td>
-                    <td>28/04/2025</td>
-                    <td>1</td>
-                    <td class="patient-actions">
-                        <a href="/patients/4" class="btn-action" title="Voir">
-                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
-                        </a>
-                        <a href="/patients/4/edit" class="btn-action" title="Éditer">
-                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
-                        </a>
-                        <button class="btn-action delete-patient" data-id="4" title="Supprimer">
-                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Émilie Petit</td>
-                    <td>emilie.petit@email.com</td>
-                    <td>06 23 45 67 89</td>
-                    <td>25/04/2025</td>
-                    <td>3</td>
-                    <td class="patient-actions">
-                        <a href="/patients/5" class="btn-action" title="Voir">
-                            <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
-                        </a>
-                        <a href="/patients/5/edit" class="btn-action" title="Éditer">
-                            <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
-                        </a>
-                        <button class="btn-action delete-patient" data-id="5" title="Supprimer">
-                            <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
-                        </button>
-                    </td>
-                </tr>
+            <tbody>                <% if (patients && patients.length > 0) { %>
+                    <% patients.forEach(patient => { %>
+                        <tr>
+                            <td><%= patient.prenom %> <%= patient.nom %></td>
+                            <td><%= patient.email %></td>
+                            <td><%= patient.telephone %></td>
+                            <td><%= new Date(patient.date_inscription).toLocaleDateString('fr-FR') %></td>
+                            <td>-</td>
+                            <td class="patient-actions">
+                                <a href="/patients/<%= patient.id %>" class="btn-action" title="Voir">
+                                    <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
+                                </a>
+                                <a href="/patients/<%= patient.id %>/edit" class="btn-action" title="Éditer">
+                                    <img src="/images/Edit.svg" alt="Éditer" class="icon-small">
+                                </a>
+                                <button class="btn-action delete-patient" data-id="<%= patient.id %>" title="Supprimer">
+                                    <img src="/images/Trash.svg" alt="Supprimer" class="icon-small">
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="no-data">Aucune patiente trouvée</td>
+                    </tr>
+                <% } %>
             </tbody>
         </table>
     </div>

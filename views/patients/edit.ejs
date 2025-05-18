@@ -1,39 +1,38 @@
 <%- include('../layouts/header', { title: 'Modifier une patiente', active: 'patients' }) %>
 
-<div class="patient-edit-page">
-    <div class="page-header">
+<div class="patient-edit-page">    <div class="page-header">
         <h2>Modifier la patiente</h2>
         <div class="header-actions">
-            <a href="/patients/1" class="btn-secondary">Annuler</a>
+            <a href="/patients/<%= patient.id %>" class="btn-secondary">Annuler</a>
             <button type="submit" form="patient-form" class="btn-primary">Enregistrer</button>
         </div>
     </div>
 
-    <form id="patient-form" class="patient-form" method="POST" action="/patients/1/edit">
+    <form id="patient-form" class="patient-form" method="POST" action="/patients/<%= patient.id %>/edit">
         <div class="form-section">
             <h3>Informations personnelles</h3>
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="firstname">Prénom</label>
-                    <input type="text" id="firstname" name="firstname" required value="Sophie">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" id="prenom" name="prenom" required value="<%= patient.prenom %>">
                 </div>
                 
                 <div class="form-group">
-                    <label for="lastname">Nom</label>
-                    <input type="text" id="lastname" name="lastname" required value="Martin">
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" name="nom" required value="<%= patient.nom %>">
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required value="sophie.martin@email.com">
+                    <input type="email" id="email" name="email" required value="<%= patient.email %>">
                 </div>
                 
                 <div class="form-group">
-                    <label for="phone">Téléphone</label>
-                    <input type="tel" id="phone" name="phone" pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}" value="06 12 34 56 78">
+                    <label for="telephone">Téléphone</label>
+                    <input type="tel" id="telephone" name="telephone" value="<%= patient.telephone %>">
                 </div>
             </div>
             
