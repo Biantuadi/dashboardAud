@@ -5,118 +5,100 @@ Dashboard administratif pour l'accompagnement des femmes et mamans en reconversi
 ## Caractéristiques
 
 - Interface administrateur pour un psychologue
-- Gestion des modules de formation
-- Gestion des patientes
-- Éditeur de contenu dynamique (style Notion)
-- Suivi des progrès des patientes
-- Gestion des rendez-vous
+- Gestion des modules de formation (thumbnails, contenu dynamiques)
+- Gestion des patientes (profil, avatar, assignation de modules)
+- Éditeur de contenu dynamique (blocs de type titre, texte, liste, image)
+- Suivi de la progression et gestion des rendez-vous
 
 ## Prérequis
 
-- Node.js v14+ et npm
-- MongoDB v4+
-- Navigateur web moderne (Chrome, Firefox, Safari, Edge)
-
-## État actuel du projet
-
-Cette version du dashboard utilise des données mockées (données de test codées en dur) au lieu d'une base de données MongoDB réelle. Les fonctionnalités de création, modification et suppression sont simulées (les formulaires fonctionnent, mais les données ne sont pas réellement sauvegardées).
-
-### Accès au dashboard de démonstration
-
-Utilisez les identifiants suivants pour accéder au dashboard:
-- Email: `admin@lesaudacieuses.fr`
-- Mot de passe: `admin123`
-
-### Pour une version avec base de données
-
-Pour utiliser le projet avec une vraie base de données MongoDB:
-1. Installez MongoDB sur votre système ou utilisez un service hébergé
-2. Décommentez la connexion à la base de données dans `app.js`
-3. Exécutez le script d'initialisation pour créer l'utilisateur administrateur: `npm run init`
+- Node.js v14+
+- npm
+- MySQL v5.7+ ou MariaDB
 
 ## Installation
 
-1. Clonez le dépôt :
+1. Cloner le dépôt :
    ```
    git clone <URL_DU_REPO>
-   cd dashboard
+   cd dashboardAud
    ```
 
-2. Installez les dépendances :
+2. Installer les dépendances :
    ```
    npm install
    ```
 
-3. Créez un fichier `.env` à la racine du projet avec les paramètres suivants :
+3. Créer un fichier `.env` à la racine avec :
    ```
    PORT=3000
    NODE_ENV=development
    SESSION_SECRET=votre-secret-ici
-   MONGODB_URI=mongodb://localhost:27017/les-audacieuses
-   UPLOAD_DIR=./public/uploads
-   MAX_FILE_SIZE=5242880
-   ADMIN_EMAIL=admin@lesaudacieuses.fr
+   DB_HOST=localhost
+   DB_USER=votre_user
+   DB_PASSWORD=votre_mot_de_passe
+   DB_NAME=audacieuses
+   MAX_FILE_SIZE=5242880  # 5 Mo
    ```
 
-4. Initialisez la base de données avec l'utilisateur administrateur :
+4. Initialiser la base de données MySQL :
    ```
-   npm run init
+   node init-database.js
    ```
 
-5. Démarrez l'application :
+5. Démarrer l’application en mode développement :
    ```
    npm run dev
    ```
 
-6. Accédez à l'application dans votre navigateur :
+6. Accéder à l’application :
    ```
    http://localhost:3000
    ```
+
+## Structure du projet
+
+- `app.js` : point d'entrée de l'application
+- `config/` : configurations (BDD, upload, etc.)
+- `controllers/` : logique métier
+- `models/` : accès aux données MySQL
+- `routes/` : définition des routes Express
+- `views/` : templates EJS
+- `public/` : fichiers statiques (CSS, JS, images, uploads)
+- `sql/` : script de création de schéma et de seed
 
 ## Utilisation
 
 ### Connexion
 
-- Utilisez les identifiants par défaut pour vous connecter :
-  - Email : `admin@lesaudacieuses.fr`
-  - Mot de passe : `admin123`
+- Identifiant par défaut : `admin@lesaudacieuses.fr`
+- Mot de passe : `admin123`
 
 ### Modules
 
-- Consultez la liste des modules
-- Ajoutez de nouveaux modules avec l'éditeur de contenu
-- Modifiez les modules existants
-- Attribuez des modules aux patientes
+- Créer / Modifier / Supprimer des modules
+- Ajouter un thumbnail et du contenu bloc par bloc
+- Visualiser les détails d’un module
 
 ### Patientes
 
-- Consultez la liste des patientes
-- Ajoutez de nouvelles patientes
-- Suivez les progrès des patientes
-- Gérez les rendez-vous
-
-## Architecture du projet
-
-- `app.js` : Point d'entrée de l'application
-- `config/` : Fichiers de configuration
-- `controllers/` : Contrôleurs de l'application
-- `models/` : Modèles de données
-- `public/` : Fichiers statiques (CSS, JS, images)
-- `routes/` : Routes de l'application
-- `views/` : Templates EJS
+- Créer / Modifier / Supprimer des patientes
+- Charger un avatar
+- Assigner des modules et suivre la progression
+- Planifier des rendez-vous
 
 ## Technologies utilisées
 
-- Node.js et Express
-- MongoDB et Mongoose
-- EJS (Embedded JavaScript Templates)
-- Multer pour la gestion des fichiers
-- bcrypt pour le hachage des mots de passe
-- express-session pour la gestion des sessions
+- Node.js & Express
+- MySQL via `mysql2/promise`
+- EJS (templates)
+- Multer (upload d’images)
+- express-session (sessions)
+- bcrypt (hash de mots de passe)
 
 ## Auteur
 
-- Les Audacieuses
+Les Audacieuses
 
 ## Licence
 
