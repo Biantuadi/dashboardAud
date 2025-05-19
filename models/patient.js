@@ -27,12 +27,12 @@ const findByEmail = async (email) => {
 
 // Fonction pour créer un nouveau patient
 const create = async (patientData) => {
-  const { nom, prenom, email, telephone, mot_de_passe, emploi_actuel, emploi_vise, competences, experience, notes } = patientData;
+  const { nom, prenom, email, telephone, mot_de_passe, emploi_actuel, emploi_vise, competences, experience, notes, photo } = patientData;
   
   const sql = `
     INSERT INTO utilisateur 
-    (nom, prenom, email, telephone, mot_de_passe, emploi_actuel, emploi_vise, competences, experience, notes) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (nom, prenom, email, telephone, mot_de_passe, emploi_actuel, emploi_vise, competences, experience, notes, photo) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   
   const result = await query(sql, [
@@ -45,7 +45,8 @@ const create = async (patientData) => {
     emploi_vise || null,
     competences || null,
     experience || null,
-    notes || null
+    notes || null,
+    photo || '/images/photo-defaut'
   ]);
   
   return {
@@ -56,13 +57,13 @@ const create = async (patientData) => {
 
 // Fonction pour mettre à jour un patient
 const update = async (id, patientData) => {
-  const { nom, prenom, email, telephone, emploi_actuel, emploi_vise, competences, experience, notes } = patientData;
+  const { nom, prenom, email, telephone, emploi_actuel, emploi_vise, competences, experience, notes, photo } = patientData;
   
   const sql = `
     UPDATE utilisateur 
     SET nom = ?, prenom = ?, email = ?, telephone = ?, 
         emploi_actuel = ?, emploi_vise = ?, competences = ?, 
-        experience = ?, notes = ?
+        experience = ?, notes = ?, photo = ?
     WHERE id = ?
   `;
   
@@ -76,6 +77,7 @@ const update = async (id, patientData) => {
     competences || null,
     experience || null,
     notes || null,
+    photo || '/images/photo-defaut',
     id
   ]);
   

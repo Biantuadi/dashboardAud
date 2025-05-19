@@ -51,6 +51,9 @@ exports.addPatient = async (req, res) => {
       emploi_actuel, emploi_vise, competences, experience, notes 
     } = req.body;
     
+    // Déterminer le chemin de la photo
+    const photo = req.file ? `/uploads/patients/${req.file.filename}` : '/images/photo-defaut';
+    
     // Créer la nouvelle patiente dans la base de données
     await Patient.create({
       nom,
@@ -62,7 +65,8 @@ exports.addPatient = async (req, res) => {
       emploi_vise,
       competences,
       experience,
-      notes
+      notes,
+      photo
     });
     
     res.redirect('/patients');
@@ -148,10 +152,14 @@ exports.getEditPatientForm = async (req, res) => {
 exports.updatePatient = async (req, res) => {
   try {
     const { id } = req.params;
+    // Récupérer l'ancienne photo pour fallback
+    const existing = await Patient.findById(id);
     const { 
       nom, prenom, email, telephone, 
       emploi_actuel, emploi_vise, competences, experience, notes 
     } = req.body;
+    // Déterminer le chemin de la photo
+    const photo = req.file ? `/uploads/patients/${req.file.filename}` : existing.photo;
     
     // Mettre à jour la patiente dans la base de données
     await Patient.update(id, {
@@ -163,7 +171,8 @@ exports.updatePatient = async (req, res) => {
       emploi_vise,
       competences,
       experience,
-      notes
+      notes,
+      photo
     });
     
     res.redirect(`/patients/${id}`);

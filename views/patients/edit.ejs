@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <form id="patient-form" class="patient-form" method="POST" action="/patients/<%= patient.id %>/edit">
+    <form id="patient-form" class="patient-form" method="POST" action="/patients/<%= patient.id %>/edit" enctype="multipart/form-data">
         <div class="form-section">
             <h3>Informations personnelles</h3>
             
@@ -104,6 +104,22 @@ Prochain rendez-vous prévu le 25/05/2025 pour faire le point sur sa progression
                         <input type="checkbox" id="module4" name="modules[]" value="4" checked>
                         <label for="module4">CV et lettre de motivation</label>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Photo de profil</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="avatar">Photo de profil</label>
+                    <input type="file" id="avatar" name="avatar" accept="image/*">
+                    <% if (patient.photo) { %>
+                      <div class="image-preview">
+                        <img src="<%= patient.photo %>" alt="Avatar" class="avatar-preview">
+                      </div>
+                    <% } %>
                 </div>
             </div>
         </div>

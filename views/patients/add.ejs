@@ -7,7 +7,7 @@
             <a href="/patients" class="btn-secondary">Annuler</a>
             <button type="submit" form="patient-form" class="btn-primary">Enregistrer</button>
         </div>
-    </div>    <form id="patient-form" class="patient-form" method="POST" action="/patients/add">
+    </div>    <form id="patient-form" class="patient-form" method="POST" action="/patients/add" enctype="multipart/form-data">
         <div class="form-section">
             <h3>Informations personnelles</h3>
             
@@ -44,6 +44,12 @@
                 <div class="form-group">
                     <label for="confirmer_mot_de_passe">Confirmer le mot de passe</label>
                     <input type="password" id="confirmer_mot_de_passe" name="confirmer_mot_de_passe" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="avatar">Photo de profil</label>
+                    <input type="file" id="avatar" name="avatar" accept="image/*">
                 </div>
             </div>
         </div>

@@ -69,11 +69,18 @@ exports.addModule = async (req, res) => {
     // Récupérer mapping bloc IDs
     const blocTypes = await Module.getBlockTypes();
 
-    // Parse content JSON
+    // Debugging: vérifier le contenu et le mapping des blocs
+    console.log('DEBUG raw content payload:', req.body.content);
     let contentItems = [];
     if (req.body.content) {
-      try { contentItems = JSON.parse(req.body.content); } catch {}      
+      try { contentItems = JSON.parse(req.body.content); } catch (e) {
+        console.error('DEBUG JSON parse error:', e);
+      }      
     }
+    console.log('DEBUG parsed contentItems:', contentItems);
+    console.log('DEBUG blocTypes from DB:', blocTypes);
+
+    // Parse content JSON
     if (Array.isArray(contentItems)) {
       for (let i = 0; i < contentItems.length; i++) {
         const item = contentItems[i];
@@ -88,15 +95,20 @@ exports.addModule = async (req, res) => {
         } else if (typeof item.content === 'string') {
           contenu = item.content;
         }
-        await Module.addContentBlock(newModule.id, {
-          bloc_id: bloc.id,
-          contenu: contenu,
-          url_ressource: item.url || null,
-          ordre: i + 1
-        });
+        try {
+          const inserted = await Module.addContentBlock(newModule.id, {
+            bloc_id: bloc.id,
+            contenu: contenu,
+            url_ressource: item.url || null,
+            ordre: i + 1
+          });
+          console.log('DEBUG inserted block:', inserted);
+        } catch (err) {
+          console.error('DEBUG error inserting block:', err);
+        }
       }
     }
-    res.redirect('/modules');
+    res.redirect(`/modules/${newModule.id}`);
   } catch (error) {
     console.error('Erreur lors de la création du module:', error);
     res.status(500).render('error', {
