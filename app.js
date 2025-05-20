@@ -54,11 +54,15 @@ const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const moduleRoutes = require('./routes/modules');
 const patientRoutes = require('./routes/patients');
+const apiModuleRoutes = require('./routes/api/modules');
+const apiPatientRoutes = require('./routes/api/patients');
 
 app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/modules', moduleRoutes);
 app.use('/patients', patientRoutes);
+app.use('/api/modules', apiModuleRoutes);
+app.use('/api/patients', apiPatientRoutes);
 
 // Gestion des erreurs - 404
 app.use((req, res, next) => {

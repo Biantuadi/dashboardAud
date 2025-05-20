@@ -87,6 +87,28 @@ Dashboard administratif pour l'accompagnement des femmes et mamans en reconversi
 - Assigner des modules et suivre la progression
 - Planifier des rendez-vous
 
+## API REST
+
+En complément des vues EJS, le serveur expose désormais une API REST en JSON :
+
+- **GET** `/api/modules` : récupère la liste de tous les modules
+- **GET** `/api/modules/:id` : récupère les détails d’un module par son `id`
+- **GET** `/api/patients` : récupère la liste de toutes les patientes
+- **GET** `/api/patients/:id` : récupère les détails d’une patiente par son `id`
+
+Exemple d’appel côté client JavaScript :
+```js
+fetch('/api/modules/1')
+  .then(res => res.json())
+  .then(({ success, data }) => {
+    if (success) {
+      console.log('Module', data);
+    }
+  });
+```
+
+Ces endpoints permettent à une application front-end externe ou mobile de consommer les données sans passer par le rendu EJS du serveur.
+
 ## Technologies utilisées
 
 - Node.js & Express
