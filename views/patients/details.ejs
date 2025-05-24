@@ -100,7 +100,7 @@
                                 </div>
                                 <div class="progress-container">
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: <%= module.progression %>%"></div>
+                                        <div class="progress-fill" style="width:<%= module.progression %>%;"></div>
                                     </div>
                                     <span class="progress-text"><%= module.progression %>% complété</span>
                                 </div>
@@ -112,52 +112,9 @@
                         </div>
                     <% } %>
                 </div>
-            </div>
+            </div> <!-- Fin de modules-section -->
 
-            <!-- Section for appointments -->
-            <div class="info-card appointments-section">
-                <div class="section-header">
-                    <h3>Rendez-vous à venir</h3>
-                    <button class="btn-outline btn-small add-appointment-btn">
-                        <img src="/images/Plus.svg" alt="+" class="icon-small">
-                        Ajouter un rendez-vous
-                    </button>
-                </div>
-                <div class="appointments-list">
-                    <% if (appointments && appointments.length > 0) { %>
-                        <% appointments.forEach(appointment => { %>
-                            <div class="appointment-item">
-                                <div class="appointment-info">
-                                    <div class="appointment-date">
-                                        <%= new Date(appointment.date_heure).toLocaleDateString('fr-FR') %> à 
-                                        <%= new Date(appointment.date_heure).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
-                                    </div>
-                                    <div class="appointment-details">
-                                        <span class="appointment-type"><%= appointment.type %></span>
-                                        <span class="appointment-duration"><%= appointment.duree %> min</span>
-                                        <span class="appointment-status status-<%= appointment.statut %>"><%= appointment.statut %></span>
-                                    </div>
-                                    <% if (appointment.notes) { %>
-                                        <div class="appointment-notes">
-                                            Notes: <%= appointment.notes %>
-                                        </div>
-                                    <% } %>
-                                </div>
-                                <div class="appointment-actions">
-                                    <button class="btn-text update-status" data-id="<%= appointment.id %>" data-status="<%= appointment.statut %>">
-                                        Changer le statut
-                                    </button>
-                                </div>
-                            </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="no-appointments">
-                            Aucun rendez-vous à venir pour cette patiente.
-                        </div>
-                    <% } %>
-                </div>
-            </div>
-        </div>
+        </div> <!-- fin patient-info-grid -->
     </div>
 </div>
 
@@ -179,39 +136,6 @@
             <div class="popup-buttons">
                 <button type="button" id="cancel-assignment" class="btn-secondary">Annuler</button>
                 <button type="submit" class="btn-primary">Assigner</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Appointment creation popup -->
-<div id="appointment-creation-popup" class="popup-container" style="display: none;">
-    <div class="popup-content">
-        <h3>Ajouter un rendez-vous</h3>
-        <form id="create-appointment-form">
-            <div class="form-group">
-                <label for="appointment-date">Date et heure</label>
-                <input type="datetime-local" id="appointment-date" name="date_heure" required>
-            </div>
-            <div class="form-group">
-                <label for="appointment-type">Type de rendez-vous</label>
-                <select id="appointment-type" name="type" required>
-                    <option value="présentiel">Présentiel</option>
-                    <option value="visio">Visio</option>
-                    <option value="téléphone">Téléphone</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="appointment-duration">Durée (minutes)</label>
-                <input type="number" id="appointment-duration" name="duree" value="60" min="15" step="15" required>
-            </div>
-            <div class="form-group">
-                <label for="appointment-notes">Notes</label>
-                <textarea id="appointment-notes" name="notes" rows="3"></textarea>
-            </div>
-            <div class="popup-buttons">
-                <button type="button" id="cancel-appointment" class="btn-secondary">Annuler</button>
-                <button type="submit" class="btn-primary">Créer</button>
             </div>
         </form>
     </div>
@@ -296,58 +220,6 @@
             .catch(error => {
                 console.error('Erreur:', error);
                 alert('Une erreur est survenue lors de l\'assignation du module');
-            });
-        });
-        
-        // Gestion du popup de création de rendez-vous
-        const addAppointmentBtn = document.querySelector('.add-appointment-btn');
-        const appointmentPopup = document.getElementById('appointment-creation-popup');
-        const cancelAppointmentBtn = document.getElementById('cancel-appointment');
-        const createAppointmentForm = document.getElementById('create-appointment-form');
-        
-        addAppointmentBtn.addEventListener('click', function() {
-            appointmentPopup.style.display = 'flex';
-        });
-        
-        cancelAppointmentBtn.addEventListener('click', function() {
-            appointmentPopup.style.display = 'none';
-        });
-        
-        createAppointmentForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const dateHeure = document.getElementById('appointment-date').value;
-            const type = document.getElementById('appointment-type').value;
-            const duree = document.getElementById('appointment-duration').value;
-            const notes = document.getElementById('appointment-notes').value;
-            
-            // Récupérer l'ID du patient depuis l'URL
-            const patientId = '<%= patient.id %>';
-            
-            // Faire une requête pour créer le rendez-vous
-            fetch(`/patients/${patientId}/appointments`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ date_heure: dateHeure, type, duree, notes })
-            })
-            .then(response => response.json())
-            .then(data => {
-                appointmentPopup.style.display = 'none';
-                
-                if (data.success) {
-                    alert('Rendez-vous créé avec succès!');
-                    // Recharger la page pour afficher le nouveau rendez-vous
-                    window.location.reload();
-                } else {
-                    alert(data.message || 'Une erreur est survenue lors de la création du rendez-vous');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Une erreur est survenue lors de la création du rendez-vous');
             });
         });
     });

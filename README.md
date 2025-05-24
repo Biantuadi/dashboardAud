@@ -95,6 +95,7 @@ En complément des vues EJS, le serveur expose désormais une API REST en JSON :
 - **GET** `/api/modules/:id` : récupère les détails d’un module par son `id`
 - **GET** `/api/patients` : récupère la liste de toutes les patientes
 - **GET** `/api/patients/:id` : récupère les détails d’une patiente par son `id`
+- **GET** `/api/patients/:id/modules` : récupère la liste des IDs de modules assignés à la patiente
 
 Exemple d’appel côté client JavaScript :
 ```js

@@ -1,37 +1,44 @@
 <%- include('layouts/header', { title: 'Dashboard', active: 'dashboard' }) %>
 
 <div class="dashboard-home">
-    <div class="dashboard-welcome">
-        <h2>Bienvenue sur votre Dashboard</h2>
-        <p class="dashboard-date">Date: <%= new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+
+
+    <!-- Cartes cliquables Modules et Clientes -->
+    <div class="dashboard-cards">
+        <a href="/modules" class="dashboard-card">
+            <img src="/images/bloc_modules.png" alt="Modules">
+            <div class="card-overlay"></div>
+            <div class="card-label">Modules</div>
+        </a>
+        <a href="/patients" class="dashboard-card">
+            <img src="/images/bloc_clientes.png" alt="Clientes">
+            <div class="card-overlay"></div>
+            <div class="card-label">Clientes</div>
+        </a>
     </div>
 
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <img src="/images/person.svg" alt="Patientes">            </div>
-            <div class="stat-info">
-                <h3>Patientes</h3>
-                <p class="stat-count"><%= stats.patientCount %></p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <img src="/images/book.svg" alt="Modules">
-            </div>
-            <div class="stat-info">
-                <h3>Modules</h3>
-                <p class="stat-count"><%= stats.moduleCount %></p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <img src="/images/date_range.svg" alt="Rendez-vous">
-            </div>
-            <div class="stat-info">
-                <h3>Rendez-vous</h3>
-                <p class="stat-count">8</p>
-            </div>
+    <div class="patient-grid-container">
+        <h3 class="patient-grid-title">Toutes les patientes</h3>
+        <div class="patient-grid">
+            <% if (patients && patients.length) { %>
+                <% patients.forEach(patient => { %>
+                    <div class="patient-card">
+                        <div class="patient-avatar">
+                            <img src="<%= patient.photo || '/images/photo-defaut.png' %>" alt="<%= patient.prenom + ' ' + patient.nom %>">
+                        </div>
+                        <div class="patient-name-block">
+                            <div class="patient-name-line"><%= patient.prenom %></div>
+                            <div class="patient-name-line"><%= patient.nom %></div>
+                        </div>
+                        <div class="patient-progress">
+                            <canvas class="progress-ring" width="80" height="80"
+                                data-completed="<%= patient.completedModules || 0 %>"
+                                data-assigned="<%= patient.assignedModules || 0 %>"></canvas>
+                            <div class="progress-text"><%= patient.completedModules || 0 %> / <%= patient.assignedModules || 0 %></div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } %>
         </div>
     </div>
 
@@ -40,7 +47,8 @@
             <div class="section-header">
                 <h3>Derniers modules</h3>
                 <a href="/modules" class="view-all">Voir tout</a>
-            </div>            <div class="recent-items">
+            </div>
+            <div class="recent-items">
                 <% if (recentModules && recentModules.length > 0) { %>
                     <% recentModules.forEach(module => { %>
                         <div class="module-item">
@@ -60,7 +68,8 @@
             <div class="section-header">
                 <h3>Dernières patientes</h3>
                 <a href="/patients" class="view-all">Voir tout</a>
-            </div>            <div class="recent-items">
+            </div>
+            <div class="recent-items">
                 <% if (recentPatients && recentPatients.length > 0) { %>
                     <% recentPatients.forEach(patient => { %>
                         <div class="patient-item">

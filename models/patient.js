@@ -5,9 +5,19 @@
 
 const { query } = require('../config/database');
 
-// Fonction pour récupérer tous les patients
+// Fonction pour récupérer tous les patients avec le nombre de modules suivis
 const findAll = async () => {
-  const sql = 'SELECT * FROM utilisateur ORDER BY date_inscription DESC';
+  const sql = `
+    SELECT u.*,
+           COUNT(mp.module_id) AS assignedModules,
+           COALESCE(SUM(CASE WHEN mp.progression = 100 THEN 1 ELSE 0 END), 0) AS completedModules,
+           GROUP_CONCAT(m.titre ORDER BY mp.date_assignation DESC SEPARATOR ', ') AS modules_suivis
+    FROM utilisateur u
+    LEFT JOIN module_patient mp ON mp.patient_id = u.id
+    LEFT JOIN module m ON m.id = mp.module_id
+    GROUP BY u.id
+    ORDER BY u.date_inscription DESC
+  `;
   return await query(sql);
 };
 

@@ -33,12 +33,14 @@ exports.getAddModuleForm = async (req, res) => {
   try {
     // Récupérer toutes les catégories
     const blockTypes = await Module.getBlockTypes();
+    const categories = await query('SELECT id, nom FROM categorie ORDER BY nom');
     
     res.render('modules/add', {
       title: 'Ajouter un module',
       active: 'modules',
       module: {},
-      blockTypes
+      blockTypes,
+      categories
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des données pour le formulaire:', error);
@@ -60,7 +62,8 @@ exports.addModule = async (req, res) => {
       est_publie: req.body.isPublished === 'on',
       est_gratuit: req.body.isFree === 'on',
       duree_estimee: parseInt(req.body.estimatedDuration || 0),
-      cree_par: req.session.user.id
+      cree_par: req.session.user.id,
+      categorie_id: req.body.categorie_id || null
     };
     const newModule = await Module.create(moduleData);
 
@@ -136,9 +139,11 @@ exports.getModuleDetails = async (req, res) => {
     const moduleContent = await Module.getModuleContent(module.id);
     console.log('DEBUG moduleContent:', moduleContent);
     
-    // Récupérer les patients assignés à ce module
+    // Récupérer les patientes assignées et toutes les patientes pour toggle
     const assignedPatients = await ModuleAssignment.getPatientsAssignedToModule(module.id);
-    
+    const allPatients = await Patient.findAll();
+    const assignedIds = assignedPatients.map(p => p.patient_id);
+
     // Récupérer les statistiques du module
     const moduleStats = await ModuleAssignment.getModuleStats(module.id);
     
@@ -147,7 +152,9 @@ exports.getModuleDetails = async (req, res) => {
       active: 'modules',
       module,
       moduleContent,
-      patients: assignedPatients,
+      assignedPatients,
+      allPatients,
+      assignedIds,
       stats: moduleStats
     });
   } catch (error) {
@@ -175,12 +182,14 @@ exports.getEditModuleForm = async (req, res) => {
     
     // Récupérer le contenu du module
     const moduleContent = await Module.getModuleContent(module.id);
+    const categories = await query('SELECT id, nom FROM categorie ORDER BY nom');
     
     res.render('modules/edit', {
       title: 'Modifier le module',
       active: 'modules',
       module,
-      moduleContent
+      moduleContent,
+      categories
     });
   } catch (error) {
     console.error('Erreur lors de la récupération du module à modifier:', error);
@@ -199,10 +208,11 @@ exports.updateModule = async (req, res) => {
     const moduleData = {
       titre: req.body.title,
       description: req.body.description,
-      miniature: req.file ? `/uploads/modules/${req.file.filename}` : '/images/default-module.png',
+      miniature: req.file ? `/uploads/modules/${req.file.filename}` : module.miniature,
       est_publie: req.body.isPublished === 'on',
       est_gratuit: req.body.isFree === 'on',
-      duree_estimee: parseInt(req.body.estimatedDuration || 0)
+      duree_estimee: parseInt(req.body.estimatedDuration || 0),
+      categorie_id: req.body.categorie_id || null
     };
     await Module.update(id, moduleData);
 

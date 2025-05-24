@@ -59,19 +59,19 @@
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="current_job">Emploi actuel</label>
-                    <input type="text" id="current_job" name="current_job">
+                    <label for="emploi_actuel">Emploi actuel</label>
+                    <input type="text" id="emploi_actuel" name="emploi_actuel">
                 </div>
                 
                 <div class="form-group">
-                    <label for="target_job">Emploi visé</label>
-                    <input type="text" id="target_job" name="target_job">
+                    <label for="emploi_vise">Emploi visé</label>
+                    <input type="text" id="emploi_vise" name="emploi_vise">
                 </div>
             </div>
             
             <div class="form-group full-width">
-                <label for="skills">Compétences</label>
-                <textarea id="skills" name="skills" rows="3" placeholder="Entrez les compétences, séparées par des virgules"></textarea>
+                <label for="competences">Compétences</label>
+                <textarea id="competences" name="competences" rows="3" placeholder="Entrez les compétences, séparées par des virgules"></textarea>
             </div>
             
             <div class="form-group full-width">
@@ -83,30 +83,19 @@
         <div class="form-section">
             <h3>Suivi et accompagnement</h3>
             
-            <div class="form-group full-width">
-                <label for="notes">Notes personnelles</label>
-                <textarea id="notes" name="notes" rows="3" placeholder="Ajouter des notes sur la patiente (visible uniquement par vous)"></textarea>
-            </div>
-            
             <div class="form-group">
                 <label>Modules à assigner</label>
                 <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module1" name="modules[]" value="1">
-                        <label for="module1">Confiance en soi</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module2" name="modules[]" value="2">
-                        <label for="module2">Gestion du stress</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module3" name="modules[]" value="3">
-                        <label for="module3">Préparation à l'entretien</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module4" name="modules[]" value="4">
-                        <label for="module4">CV et lettre de motivation</label>
-                    </div>
+                    <% if (typeof allModules !== 'undefined' && allModules.length) { %>
+                        <% allModules.forEach(module => { %>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="module-<%= module.id %>" name="modules[]" value="<%= module.id %>">
+                                <label for="module-<%= module.id %>"><%= module.titre %></label>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div>Aucun module disponible</div>
+                    <% } %>
                 </div>
             </div>
         </div>

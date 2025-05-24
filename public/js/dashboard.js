@@ -139,3 +139,39 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Draw circular progress rings for each patient
+document.addEventListener('DOMContentLoaded', function() {
+    const rings = document.querySelectorAll('.progress-ring');
+    rings.forEach(canvas => {
+        const ctx = canvas.getContext('2d');
+        const completed = parseInt(canvas.dataset.completed, 10) || 0;
+        const assigned = parseInt(canvas.dataset.assigned, 10) || 0;
+        const percent = assigned > 0 ? completed / assigned : 0;
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const thickness = 12; // augmenté de 8 => 12 pour un anneau plus épais
+        const radius = (Math.min(width, height) / 2) - thickness;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // Background circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#e6e6e6';
+        ctx.lineWidth = thickness;
+        ctx.stroke();
+
+        // Progress arc
+        const startAngle = -Math.PI / 2;
+        const endAngle = startAngle + (2 * Math.PI * percent);
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+        ctx.lineWidth = thickness;
+        ctx.stroke();
+    });
+});

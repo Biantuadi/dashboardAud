@@ -8,11 +8,10 @@ const { query } = require('../config/database');
 // Fonction pour récupérer les modules assignés à un patient
 const getAssignedModules = async (patientId) => {
   const sql = `
-    SELECT mp.*, m.titre, m.description, c.nom as categorie_nom, 
+    SELECT mp.*, m.titre, m.description, 
            m.miniature, m.est_publie, m.est_gratuit, m.duree_estimee
     FROM module_patient mp 
     JOIN module m ON mp.module_id = m.id 
-    LEFT JOIN categorie c ON m.categorie_id = c.id
     WHERE mp.patient_id = ?
     ORDER BY mp.date_assignation DESC
   `;

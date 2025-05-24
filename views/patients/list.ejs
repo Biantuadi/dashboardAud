@@ -2,7 +2,7 @@
 
 <div class="patients-list-page">
     <div class="page-header">
-        <h2>Liste des patientes</h2>
+        <!-- <h2>Liste des patientes</h2> -->
         <a href="/patients/add" class="btn-primary">
             <img src="/images/Plus.svg" alt="+" class="icon-small">
             Ajouter une patiente
@@ -34,6 +34,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>Photo</th>
                     <th>Nom</th>
                     <th>Email</th>
                     <th>Téléphone</th>
@@ -42,14 +43,28 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>                <% if (patients && patients.length > 0) { %>
+            <tbody>
+                <% if (patients && patients.length > 0) { %>
                     <% patients.forEach(patient => { %>
                         <tr>
+                            <td>
+                                <img src="<%= patient.photo || '/images/photo-defaut.png' %>" alt="Photo <%= patient.prenom %>" class="patient-list-avatar">
+                            </td>
                             <td><%= patient.prenom %> <%= patient.nom %></td>
                             <td><%= patient.email %></td>
                             <td><%= patient.telephone %></td>
                             <td><%= new Date(patient.date_inscription).toLocaleDateString('fr-FR') %></td>
-                            <td>-</td>
+                            <td>
+                                <% if (patient.modules_suivis) { %>
+                                    <div class="skills-list">
+                                        <% patient.modules_suivis.split(', ').forEach(module => { %>
+                                            <span class="skill-tag"><%= module %></span>
+                                        <% }) %>
+                                    </div>
+                                <% } else { %>
+                                    Aucun module
+                                <% } %>
+                            </td>
                             <td class="patient-actions">
                                 <a href="/patients/<%= patient.id %>" class="btn-action" title="Voir">
                                     <img src="/images/chevron_right.svg" alt="Voir" class="icon-small">
@@ -65,7 +80,7 @@
                     <% }) %>
                 <% } else { %>
                     <tr>
-                        <td colspan="6" class="no-data">Aucune patiente trouvée</td>
+                        <td colspan="7" class="no-data">Aucune patiente trouvée</td>
                     </tr>
                 <% } %>
             </tbody>

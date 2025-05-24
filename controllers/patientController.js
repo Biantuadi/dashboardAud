@@ -35,12 +35,46 @@ exports.getPatients = async (req, res) => {
 };
 
 // Afficher le formulaire d'ajout de patiente
-exports.getAddPatientForm = (req, res) => {
+exports.getAddPatientForm = async (req, res) => {
+  const allModules = await Module.findAll();
   res.render('patients/add', {
-    title: 'Ajouter une patiente',
-    active: 'patients',
-    patient: {}
+      title: 'Ajouter une patiente',
+      active: 'patients',
+      patient: {},
+      allModules
   });
+};
+
+// Afficher le formulaire de modification d'une patiente
+exports.getEditPatientForm = async (req, res) => {
+  try {
+    const patient = await Patient.findById(req.params.id);
+    
+    if (!patient) {
+      return res.status(404).render('error', {
+        title: 'Patiente non trouvée',
+        message: 'La patiente demandée n\'existe pas',
+        error: { status: 404 }
+      });
+    }
+    const allModules = await Module.findAll();
+    const assigned = await ModuleAssignment.getAssignedModules(patient.id);
+    const assignedModuleIds = assigned.map(m => m.module_id);
+    res.render('patients/edit', {
+      title: 'Modifier la patiente',
+      active: 'patients',
+      patient,
+      allModules,
+      assignedModuleIds
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération de la patiente à modifier:', error);
+    res.status(500).render('error', {
+      title: 'Erreur',
+      message: 'Une erreur est survenue lors de la récupération de la patiente à modifier',
+      error
+    });
+  }
 };
 
 // Ajouter une nouvelle patiente
@@ -55,7 +89,7 @@ exports.addPatient = async (req, res) => {
     const photo = req.file ? `/uploads/patients/${req.file.filename}` : '/images/photo-defaut';
     
     // Créer la nouvelle patiente dans la base de données
-    await Patient.create({
+    const newPatient = await Patient.create({
       nom,
       prenom,
       email,
@@ -68,7 +102,13 @@ exports.addPatient = async (req, res) => {
       notes,
       photo
     });
-    
+    // Gérer l'assignation des modules sélectionnés
+    if (req.body.modules) {
+      const moduleIds = Array.isArray(req.body.modules) ? req.body.modules : [req.body.modules];
+      for (const moduleId of moduleIds) {
+        await ModuleAssignment.assignModuleToPatient(moduleId, newPatient.id);
+      }
+    }
     res.redirect('/patients');
   } catch (error) {
     console.error('Erreur lors de la création de la patiente:', error);
@@ -120,34 +160,6 @@ exports.getPatientDetails = async (req, res) => {
   }
 };
 
-// Afficher le formulaire de modification d'une patiente
-exports.getEditPatientForm = async (req, res) => {
-  try {
-    const patient = await Patient.findById(req.params.id);
-    
-    if (!patient) {
-      return res.status(404).render('error', {
-        title: 'Patiente non trouvée',
-        message: 'La patiente demandée n\'existe pas',
-        error: { status: 404 }
-      });
-    }
-    
-    res.render('patients/edit', {
-      title: 'Modifier la patiente',
-      active: 'patients',
-      patient
-    });
-  } catch (error) {
-    console.error('Erreur lors de la récupération de la patiente à modifier:', error);
-    res.status(500).render('error', {
-      title: 'Erreur',
-      message: 'Une erreur est survenue lors de la récupération de la patiente à modifier',
-      error
-    });
-  }
-};
-
 // Mettre à jour une patiente
 exports.updatePatient = async (req, res) => {
   try {
@@ -174,7 +186,16 @@ exports.updatePatient = async (req, res) => {
       notes,
       photo
     });
-    
+    // Mettre à jour les assignations de modules
+    // Supprimer les anciennes
+    await query('DELETE FROM module_patient WHERE patient_id = ?', [id]);
+    // Réassigner
+    if (req.body.modules) {
+      const moduleIds = Array.isArray(req.body.modules) ? req.body.modules : [req.body.modules];
+      for (const moduleId of moduleIds) {
+        await ModuleAssignment.assignModuleToPatient(moduleId, id);
+      }
+    }
     res.redirect(`/patients/${id}`);
   } catch (error) {
     console.error('Erreur lors de la mise à jour de la patiente:', error);

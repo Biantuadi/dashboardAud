@@ -26,7 +26,8 @@ exports.getDashboard = async (req, res) => {
       },
       recentModules: modules.slice(0, 5),
       recentPatients: patients.slice(0, 5),
-      upcomingAppointments
+      upcomingAppointments,
+      patients // ajoute la liste complète des patientes
     });
   } catch (error) {
     console.error('Erreur lors du chargement du dashboard:', error);

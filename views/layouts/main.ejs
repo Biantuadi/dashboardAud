@@ -6,13 +6,13 @@
     <title>Les Audacieuses - Dashboard</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body class="dashboard-layout">
-    <header class="main-header">
-        <div class="header-left">
-            <div class="logo">
-                <img src="/images/logo.svg" alt="Les Audacieuses Logo">
+<body class="dashboard-layout">    <header class="main-header">        <div class="header-left">
+            <div class="logo-container">
+                <div class="logo-text">Les Audacieuses Académie</div>
+                <div class="logo" style="cursor: pointer;">
+                    <img src="/images/logo.svg" alt="Les Audacieuses Logo">
+                </div>
             </div>
-            <h1>Dashboard Administrateur</h1>
         </div>
         <div class="header-right">
             <div class="user-profile">
@@ -61,11 +61,32 @@
             <div class="popup-buttons">
                 <button id="popup-cancel" class="btn-secondary">Annuler</button>
                 <button id="popup-confirm" class="btn-primary">Confirmer</button>
-            </div>
-        </div>
+            </div>        </div>
     </div>
-
-    <script src="/js/dashboard.js"></script>
+    
+    <script src="/js/dashboard.js"></script>    <script>
+        // Debug et gestion du logo
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.logo');
+            if (logo) {
+                console.log('Logo trouvé et événement ajouté');
+                
+                // Supprimer l'ancien onclick et utiliser addEventListener
+                logo.removeAttribute('onclick');
+                
+                logo.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Logo cliqué! Redirection vers /dashboard');
+                    window.location.href = '/dashboard';
+                });
+                
+                // Style hover
+                logo.style.cursor = 'pointer';
+            } else {
+                console.error('Logo non trouvé dans le DOM');
+            }
+        });
+    </script>
     <%- locals.scripts || '' %>
 </body>
 </html>

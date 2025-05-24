@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `module_patient`;
 DROP TABLE IF EXISTS `contenu_bloc`;
 DROP TABLE IF EXISTS `bloc`;
 DROP TABLE IF EXISTS `module`;
--- DROP TABLE IF EXISTS `categorie`; -- Table catégorie supprimée
+DROP TABLE IF EXISTS `categorie`;
 DROP TABLE IF EXISTS `utilisateur`;
 DROP TABLE IF EXISTS `psychologue`;
 DROP TABLE IF EXISTS `rendez_vous`;
@@ -49,6 +49,7 @@ CREATE TABLE `utilisateur` (
   `competences` text DEFAULT NULL,
   `experience` text DEFAULT NULL,
   `notes` text DEFAULT NULL,
+  `photo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -68,9 +69,12 @@ CREATE TABLE `module` (
   `duree_estimee` int(11) DEFAULT 0, -- En minutes
   `cree_par` int(11) DEFAULT NULL,
   `date_creation` datetime NOT NULL DEFAULT current_timestamp(),
+  `categorie_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_module_psychologue` (`cree_par`),
-  CONSTRAINT `fk_module_psychologue` FOREIGN KEY (`cree_par`) REFERENCES `psychologue` (`id`) ON DELETE SET NULL
+  KEY `fk_module_categorie` (`categorie_id`),
+  CONSTRAINT `fk_module_psychologue` FOREIGN KEY (`cree_par`) REFERENCES `psychologue` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_module_categorie` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -149,8 +153,16 @@ CREATE TABLE `rendez_vous` (
 
 -- --------------------------------------------------------
 --
--- Réactivation des vérifications de clés étrangères
-SET FOREIGN_KEY_CHECKS = 1;
+-- Table des catégories
+--
+
+CREATE TABLE `categorie` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `nom` VARCHAR(255) NOT NULL,
+  `description` TEXT DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_categorie_nom` (`nom`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 --

@@ -54,24 +54,24 @@
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="current_job">Emploi actuel</label>
-                    <input type="text" id="current_job" name="current_job" value="Assistante administrative">
+                    <label for="emploi_actuel">Emploi actuel</label>
+                    <input type="text" id="emploi_actuel" name="emploi_actuel" value="<%= patient.emploi_actuel || '' %>">
                 </div>
                 
                 <div class="form-group">
-                    <label for="target_job">Emploi visé</label>
-                    <input type="text" id="target_job" name="target_job" value="Développeuse web">
+                    <label for="emploi_vise">Emploi visé</label>
+                    <input type="text" id="emploi_vise" name="emploi_vise" value="<%= patient.emploi_vise || '' %>">
                 </div>
             </div>
             
             <div class="form-group full-width">
-                <label for="skills">Compétences</label>
-                <textarea id="skills" name="skills" rows="3">Organisation, Communication, Pack Office, Anglais, HTML/CSS (débutant)</textarea>
+                <label for="competences">Compétences</label>
+                <textarea id="competences" name="competences" rows="3"><%= patient.competences || '' %></textarea>
             </div>
             
             <div class="form-group full-width">
                 <label for="experience">Expérience professionnelle</label>
-                <textarea id="experience" name="experience" rows="3">8 ans d'expérience en tant qu'assistante administrative dans divers secteurs. Formation en ligne en développement web depuis 6 mois.</textarea>
+                <textarea id="experience" name="experience" rows="3"><%= patient.experience || '' %></textarea>
             </div>
         </div>
         
@@ -80,30 +80,19 @@
             
             <div class="form-group full-width">
                 <label for="notes">Notes personnelles</label>
-                <textarea id="notes" name="notes" rows="3">Sophie est très motivée pour sa reconversion. Elle a déjà commencé à apprendre le développement web en autodidacte et cherche à renforcer sa confiance en elle pour les entretiens d'embauche.
-
-Prochain rendez-vous prévu le 25/05/2025 pour faire le point sur sa progression.</textarea>
+                <textarea id="notes" name="notes" rows="3"><%= patient.notes || '' %></textarea>
             </div>
             
             <div class="form-group">
                 <label>Modules assignés</label>
                 <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module1" name="modules[]" value="1" checked>
-                        <label for="module1">Confiance en soi</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module2" name="modules[]" value="2">
-                        <label for="module2">Gestion du stress</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module3" name="modules[]" value="3" checked>
-                        <label for="module3">Préparation à l'entretien</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="module4" name="modules[]" value="4" checked>
-                        <label for="module4">CV et lettre de motivation</label>
-                    </div>
+                    <% allModules.forEach(module => { %>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="module-<%= module.id %>" name="modules[]" value="<%= module.id %>"
+                                <%= assignedModuleIds.includes(module.id) ? 'checked' : '' %> >
+                            <label for="module-<%= module.id %>"><%= module.titre %></label>
+                        </div>
+                    <% }); %>
                 </div>
             </div>
         </div>

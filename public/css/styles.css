@@ -108,10 +108,14 @@ a:hover {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-image: url('/images/Backgrounds\ A.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .main-header {
-  background-color: var(--card-color);
+  background-color: rgba(255, 255, 255, 0.95);
   padding: 15px 30px;
   box-shadow: var(--shadow);
   display: flex;
@@ -125,6 +129,7 @@ a:hover {
 .header-left {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   flex: 1;
 }
 
@@ -152,12 +157,41 @@ a:hover {
   justify-content: center;
 }
 
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
 .logo {
   text-align: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  background-color: rgba(239, 125, 79, 0.1);
 }
 
 .logo img {
-  height: 45px;
+  height: 40px;
+  transition: var(--transition);
+}
+
+.logo-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .header-right {
@@ -174,20 +208,28 @@ a:hover {
 .header-nav a {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--text-color);
+  gap: 20px;
+  color: var(--primary-color); /* couleur de base EF7D4F */
   transition: var(--transition);
 }
 
 .header-nav a.active {
+  /* garde la même couleur si besoin */
   color: var(--primary-color);
+}
+
+/* Supprimer le filtre sur hover, ne garder que le scale */
+.header-nav a:hover img {
+  filter: inherit;
+  transform: scale(1.2);
 }
 
 .header-nav img {
   width: 24px;
   height: 24px;
-  /* Smooth transition for both color filter and scaling */
-  transition: filter var(--transition), transform var(--transition);
+  /* Recolorer l'icône en orange avec un filtre CSS */
+  filter: brightness(0) saturate(100%) invert(35%) sepia(95%) saturate(500%) hue-rotate(2deg) brightness(100%) contrast(100%);
+  transition: transform var(--transition);
 }
 
 /* Tint header icons on hover to primary color */
@@ -218,7 +260,7 @@ a:hover {
 
 .sidebar {
   width: 250px;
-  background-color: var(--card-color);
+  background-color: rgba(255, 255, 255, 0.9);
   box-shadow: var(--shadow);
   padding: 20px 0;
   flex-shrink: 0;
@@ -260,6 +302,8 @@ a:hover {
   flex: 1;
   padding: 30px;
   overflow-y: auto;
+  background-color: rgba(245, 247, 250, 0.25);
+  border-radius: 20px 0 0 0;
 }
 
 /* Composants UI communs */
@@ -1170,6 +1214,79 @@ a:hover {
   gap: 1rem;
 }
 
+/* Grille de patientes */
+.patient-grid-container {
+  margin: 40px auto;
+  max-width: 1200px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.patient-grid-title {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+.patient-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.patient-card {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  text-align: left;
+  box-shadow: var(--shadow);
+}
+.patient-avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 10px 0 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.patient-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.patient-name {
+  font-weight: 500;
+  margin-right: auto;
+}
+.patient-progress {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 10px auto 0;
+}
+.progress-ring {
+  transform: rotate(-90deg);
+  display: block;
+}
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+/* Grille en responsive */
+@media (max-width: 600px) {
+  .patient-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
 /* Styles responsive */
 @media (max-width: 992px) {
   .content-wrapper {
@@ -1246,4 +1363,207 @@ a:hover {
 
 .form-actions-bottom .btn-primary {
   padding: 10px 20px;
+}
+
+/* Cartes cliquables sur la page Dashboard */
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.dashboard-card {
+  position: relative;
+  width: 528px; /* 440px * 1.2 */
+  height: 360px; /* 300px * 1.2 */
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  display: block;
+}
+
+.dashboard-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1c371c; /* vert sapin foncé */
+  opacity: 0.75; /* augmenté à 40% */
+  transition: background-color 0.6s ease, opacity 0.6s ease;
+}
+
+.card-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dashboard-card:hover .card-overlay {
+  background-color: #ffffff;
+  opacity: 0.2; /* même opacité en hover */
+}
+
+.dashboard-card:hover .card-label {
+  color: #1c371c; /* vert sapin au hover */
+}
+
+@media (max-width: 576px) {
+  .dashboard-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+  .dashboard-card {
+    width: 80%;
+    height: 120px;
+  }
+}
+
+/* Ajustements pour le bloc de nom de patiente */
+.patient-name-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 120px; /* fixe une largeur afin de limiter la hauteur totale */
+}
+.patient-name-line {
+  font-weight: 500;
+  margin: 2px 0;
+}
+
+/* Avatar dans la liste des patientes */
+.patient-list-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Ajustements pour la page détails de la patiente */
+.patient-details-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.patient-header h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    word-break: break-word;
+}
+.patient-since {
+    display: block;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+}
+.info-card {
+    overflow-wrap: break-word;
+}
+.info-value {
+    word-break: break-word;
+}
+.modules-section .modules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.module-progress-item {
+    background-color: var(--light-color);
+    padding: 15px;
+    border-radius: var(--border-radius);
+}
+.progress-container {
+    margin-top: 10px;
+}
+.progress-bar {
+    width: 100%;
+    background-color: var(--border-color);
+    border-radius: var(--border-radius);
+    height: 8px;
+    overflow: hidden;
+}
+.progress-fill {
+    background-color: var(--primary-color);
+    height: 100%;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Styles pour la page de détails des modules - liste de patientes */
+.module-assignments .patient-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+/* Adaptation mobile */
+@media (max-width: 768px) {
+  .module-assignments .patient-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .module-assignments .patient-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Switch toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+}
+.slider.round {
+  border-radius: 20px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+.switch input:checked + .slider {
+  background-color: var(--primary-color);
+}
+.switch input:focus + .slider {
+  box-shadow: 0 0 1px var(--primary-color);
+}
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
 }

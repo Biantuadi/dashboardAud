@@ -36,8 +36,6 @@
 
         <div class="module-content">
             <h3>Contenu du module</h3>
-            <!-- DEBUG: inspect moduleContent -->
-            <pre style="background:#f0f0f0;padding:10px;overflow:auto;">Content JSON: <%= JSON.stringify(moduleContent, null, 2) %></pre>
             
             <div class="content-preview">
                 <% if (!moduleContent || moduleContent.length === 0) { %>
@@ -70,49 +68,29 @@
         </div>
 
         <div class="module-assignments">
-            <h3>Patientes inscrites à ce module</h3>
-            
+            <h3>Patientes</h3>
             <div class="patient-list">
-                <div class="patient-item">
-                    <div class="patient-info">
-                        <span class="patient-name">Sophie Martin</span>
-                        <span class="patient-email">sophie.martin@email.com</span>
-                    </div>
-                    <div class="patient-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 75%;"></div>
+                <% allPatients.forEach(p => { %>
+                    <div class="patient-item">
+                        <img src="<%= p.photo || '/images/photo-defaut.png' %>" alt="<%= p.prenom %> <%= p.nom %>" class="patient-avatar">
+                        <div class="patient-info">
+                            <span class="patient-name"><%= p.prenom %></span>
+                            <span class="patient-name"><%= p.nom %></span>
                         </div>
-                        <span class="progress-text">75% complété</span>
-                    </div>
-                </div>
-                
-                <div class="patient-item">
-                    <div class="patient-info">
-                        <span class="patient-name">Laura Dubois</span>
-                        <span class="patient-email">laura.dubois@email.com</span>
-                    </div>
-                    <div class="patient-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 40%;"></div>
+                        <div class="patient-toggle">
+                            <label class="switch">
+                                <input type="checkbox" class="assign-toggle" data-patient-id="<%= p.id %>" <%= assignedIds.includes(p.id) ? 'checked' : '' %> />
+                                <span class="slider round"></span>
+                            </label>
                         </div>
-                        <span class="progress-text">40% complété</span>
                     </div>
-                </div>
-                
-                <div class="patient-item">
-                    <div class="patient-info">
-                        <span class="patient-name">Julie Blanc</span>
-                        <span class="patient-email">julie.blanc@email.com</span>
-                    </div>
-                    <div class="patient-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 90%;"></div>
-                        </div>
-                        <span class="progress-text">90% complété</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <% }) %>
+             </div>
+         </div>
+     </div>
+    <!-- Bouton retour en bas de page -->
+    <div class="form-actions-bottom" style="text-align:center;margin:20px 0;">
+        <a href="/modules" class="btn-primary">Retour</a>
     </div>
 </div>
 
@@ -146,6 +124,29 @@
             };
         });
     });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.assign-toggle').forEach(cb => {
+        cb.addEventListener('change', async function() {
+            const patientId = this.dataset.patientId;
+            const moduleId = '<%= module.id %>';
+            const method = this.checked ? 'POST' : 'DELETE';
+            try {
+                const res = await fetch(`/api/patients/${patientId}/modules/${moduleId}`, { method });
+                const json = await res.json();
+                if (!json.success) {
+                    alert(json.message || 'Erreur lors de la mise à jour');
+                    this.checked = !this.checked;
+                }
+            } catch (e) {
+                console.error(e);
+                this.checked = !this.checked;
+            }
+        });
+    });
+});
 </script>
 
 <%- include('../layouts/footer') %>
