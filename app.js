@@ -9,6 +9,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 require('dotenv').config();
+const cors = require('cors');
 
 // Connexion à la base de données MySQL
 const { connectDB } = require('./config/database');
@@ -21,7 +22,7 @@ connectDB().then(() => {
 
 // Initialisation de l'application Express
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Configuration des vues
 app.set('views', path.join(__dirname, 'views'));
@@ -33,6 +34,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// cors
+app.use(cors());
 
 // Configuration de la session
 app.use(session({

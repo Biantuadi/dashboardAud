@@ -72,7 +72,7 @@
             <div class="patient-list">
                 <% allPatients.forEach(p => { %>
                     <div class="patient-item">
-                        <img src="<%= p.photo || '/images/photo-defaut.png' %>" alt="<%= p.prenom %> <%= p.nom %>" class="patient-avatar">
+                        <img src="<%= p.photo || p.image_profil || '/images/photo-defaut.png' %>" alt="<%= p.prenom %> <%= p.nom %>" class="patient-avatar">
                         <div class="patient-info">
                             <span class="patient-name"><%= p.prenom %></span>
                             <span class="patient-name"><%= p.nom %></span>

@@ -24,7 +24,7 @@
                 <% patients.forEach(patient => { %>
                     <div class="patient-card">
                         <div class="patient-avatar">
-                            <img src="<%= patient.photo || '/images/photo-defaut.png' %>" alt="<%= patient.prenom + ' ' + patient.nom %>">
+                            <img src="<%= patient.photo || patient.image_profil  || '/images/photo-defaut.png' %>" alt="<%= patient.prenom + ' ' + patient.nom %>">
                         </div>
                         <div class="patient-name-block">
                             <div class="patient-name-line"><%= patient.prenom %></div>

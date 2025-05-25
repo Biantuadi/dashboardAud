@@ -48,7 +48,7 @@
                     <% patients.forEach(patient => { %>
                         <tr>
                             <td>
-                                <img src="<%= patient.photo || '/images/photo-defaut.png' %>" alt="Photo <%= patient.prenom %>" class="patient-list-avatar">
+                                <img src="<%= patient.photo || patient.image_profil || '/images/photo-defaut.png' %>" alt="Photo <%= patient.prenom %>" class="patient-list-avatar">
                             </td>
                             <td><%= patient.prenom %> <%= patient.nom %></td>
                             <td><%= patient.email %></td>

@@ -63,7 +63,7 @@ const create = async (moduleData) => {
   const result = await query(sql, [
     titre,
     description,
-    miniature || '/images/default-module.png',
+    miniature,
     est_publie ? 1 : 0,
     est_gratuit ? 1 : 0,
     duree_estimee || 0,
@@ -88,7 +88,7 @@ const update = async (id, moduleData) => {
   await query(sql, [
     titre,
     description,
-    miniature || '/images/default-module.png',
+    miniature,
     est_publie ? 1 : 0,
     est_gratuit ? 1 : 0,
     duree_estimee || 0,

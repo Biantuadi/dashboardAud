@@ -6,9 +6,9 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 // Correction du nom de la base en cas d’erreur de variable d’environnement
-const dbName = (process.env.DB_NAME && process.env.DB_NAME.toLowerCase() !== 'audacieuses')
+const dbName = (process.env.DB_NAME && process.env.DB_NAME.toLowerCase() !== 'beni_mds_e-commerce')
   ? 'audacieuses'
-  : (process.env.DB_NAME || 'audacieuses');
+  : (process.env.DB_NAME || 'beni_mds_e-commerce');
 
 // Configuration de la connexion MySQL
 const dbConfig = {
