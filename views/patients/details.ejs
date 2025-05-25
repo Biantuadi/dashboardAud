@@ -2,7 +2,7 @@
 
 <div class="patient-details-page">    <div class="page-header">
         <div class="header-actions">
-            <a href="/patients" class="btn-back">
+            <a href="/patients" class="btn-secondary">
                 <img src="/images/arrow_back.svg" alt="Retour" class="icon-small">
                 Retour à la liste
             </a>
@@ -85,32 +85,22 @@
 
             <div class="info-card modules-section">
                 <div class="section-header">
-                    <h3>Modules suivis</h3>
-                    <button class="btn-outline btn-small add-module-btn">
-                        <img src="/images/Plus.svg" alt="+" class="icon-small">
-                        Assigner un module
-                    </button>
-                </div>                <div class="modules-list">
-                    <% if (assignedModules && assignedModules.length > 0) { %>
-                        <% assignedModules.forEach(module => { %>
-                            <div class="module-progress-item">
-                                <div class="module-info">
-                                    <h4><%= module.titre %></h4>
-                                    <span class="date-assigned">Assigné le <%= new Date(module.date_assignation || module.date_assignment).toLocaleDateString('fr-FR') %></span>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width:<%= module.progression %>%;"></div>
-                                    </div>
-                                    <span class="progress-text"><%= module.progression %>% complété</span>
-                                </div>
+                    <h3>Modules</h3>
+                </div>
+                <div class="modules-list">
+                    <% allModules.forEach(m => { %>
+                        <div class="module-progress-item">
+                            <div class="module-info">
+                                <h4><%= m.titre %></h4>
                             </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="no-modules">
-                            Aucun module assigné à cette patiente.
+                            <div class="patient-toggle">
+                                <label class="switch">
+                                    <input type="checkbox" class="assign-toggle" data-module-id="<%= m.id %>" <%= assignedModules.map(a => a.module_id).includes(m.id) ? 'checked' : '' %> />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                         </div>
-                    <% } %>
+                    <% }); %>
                 </div>
             </div> <!-- Fin de modules-section -->
 
@@ -118,27 +108,11 @@
     </div>
 </div>
 
-<!-- Module assignment popup -->
-<div id="module-assignment-popup" class="popup-container" style="display: none;">
-    <div class="popup-content">
-        <h3>Assigner un module</h3>
-        <form id="assign-module-form">
-            <div class="form-group">                <label for="module-select">Sélectionner un module</label>
-                <select id="module-select" name="module_id" required>
-                    <option value="">-- Choisir un module --</option>
-                    <% if (allModules && allModules.length > 0) { %>
-                        <% allModules.forEach(module => { %>
-                            <option value="<%= module.id %>"><%= module.titre %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-            </div>
-            <div class="popup-buttons">
-                <button type="button" id="cancel-assignment" class="btn-secondary">Annuler</button>
-                <button type="submit" class="btn-primary">Assigner</button>
-            </div>
-        </form>
-    </div>
+<div class="form-actions-bottom" style="text-align:center;margin:20px 0;">
+    <a href="/patients" class="btn-secondary">
+        <img src="/images/arrow_back.svg" alt="Retour" class="icon-small">
+        Retour à la liste
+    </a>
 </div>
 
 <script>
@@ -171,55 +145,40 @@
             };
         });
         
-        // Gestion du popup d'assignation de module
-        const addModuleBtn = document.querySelector('.add-module-btn');
-        const modulePopup = document.getElementById('module-assignment-popup');
-        const cancelAssignmentBtn = document.getElementById('cancel-assignment');
-        const assignModuleForm = document.getElementById('assign-module-form');
+        // Gestion des toggles d'assignation de module
+        const assignToggles = document.querySelectorAll('.assign-toggle');
         
-        addModuleBtn.addEventListener('click', function() {
-            modulePopup.style.display = 'flex';
-        });
-        
-        cancelAssignmentBtn.addEventListener('click', function() {
-            modulePopup.style.display = 'none';
-        });
-          assignModuleForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const moduleId = document.getElementById('module-select').value;
-            
-            if (!moduleId) {
-                alert('Veuillez sélectionner un module');
-                return;
-            }
-            
-            // Récupérer l'ID du patient depuis l'URL
-            const patientId = '<%= patient.id %>';
-            
-            // Faire une requête pour assigner le module
-            fetch(`/patients/${patientId}/assign-module`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ module_id: moduleId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                modulePopup.style.display = 'none';
+        assignToggles.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const moduleId = this.getAttribute('data-module-id');
+                const isChecked = this.checked;
                 
-                if (data.success) {
-                    alert('Module assigné avec succès!');
-                    // Recharger la page pour afficher le nouveau module
-                    window.location.reload();
-                } else {
-                    alert(data.message || 'Une erreur est survenue lors de l\'assignation du module');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Une erreur est survenue lors de l\'assignation du module');
+                // Récupérer l'ID du patient depuis l'URL
+                const patientId = '<%= patient.id %>';
+                
+                // Faire une requête pour assigner ou désassigner le module
+                fetch(`/patients/${patientId}/${isChecked ? 'assign-module' : 'unassign-module'}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ module_id: moduleId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Module ${isChecked ? 'assigné' : 'désassigné'} avec succès!`);
+                        // Recharger la page pour mettre à jour l'état des modules
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Une erreur est survenue lors de l\'assignation du module');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de l\'assignation du module');
+                });
             });
         });
     });

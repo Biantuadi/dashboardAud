@@ -83,16 +83,22 @@
                 <textarea id="notes" name="notes" rows="3"><%= patient.notes || '' %></textarea>
             </div>
             
-            <div class="form-group">
+            <div class="form-group modules-section">
                 <label>Modules assignés</label>
-                <div class="checkbox-group">
-                    <% allModules.forEach(module => { %>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="module-<%= module.id %>" name="modules[]" value="<%= module.id %>"
-                                <%= assignedModuleIds.includes(module.id) ? 'checked' : '' %> >
-                            <label for="module-<%= module.id %>"><%= module.titre %></label>
+                <div class="modules-list">
+                    <% allModules.forEach(m => { %>
+                        <div class="module-progress-item">
+                            <div class="module-info">
+                                <h4><%= m.titre %></h4>
+                            </div>
+                            <div class="patient-toggle">
+                                <label class="switch">
+                                    <input type="checkbox" id="module-<%= m.id %>" name="modules[]" value="<%= m.id %>" <%= assignedModuleIds.includes(m.id) ? 'checked' : '' %> />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                         </div>
-                    <% }); %>
+                    <% }) %>
                 </div>
             </div>
         </div>

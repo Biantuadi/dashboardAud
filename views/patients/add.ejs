@@ -83,18 +83,25 @@
         <div class="form-section">
             <h3>Suivi et accompagnement</h3>
             
-            <div class="form-group">
+            <div class="form-group modules-section">
                 <label>Modules à assigner</label>
-                <div class="checkbox-group">
+                <div class="modules-list">
                     <% if (typeof allModules !== 'undefined' && allModules.length) { %>
-                        <% allModules.forEach(module => { %>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="module-<%= module.id %>" name="modules[]" value="<%= module.id %>">
-                                <label for="module-<%= module.id %>"><%= module.titre %></label>
+                        <% allModules.forEach(m => { %>
+                            <div class="module-progress-item">
+                                <div class="module-info">
+                                    <h4><%= m.titre %></h4>
+                                </div>
+                                <div class="patient-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox" name="modules[]" value="<%= m.id %>" />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
                             </div>
                         <% }) %>
                     <% } else { %>
-                        <div>Aucun module disponible</div>
+                        <p>Aucun module disponible</p>
                     <% } %>
                 </div>
             </div>

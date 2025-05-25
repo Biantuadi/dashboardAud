@@ -1046,6 +1046,7 @@ a:hover {
 .patients-table td {
   padding: 15px;
   border-bottom: 1px solid var(--border-color);
+  vertical-align: middle; /* align cell content to middle for consistent border alignment */
 }
 
 .patients-table tr:last-child td {
@@ -1055,6 +1056,7 @@ a:hover {
 .patient-actions {
   display: flex;
   gap: 5px;
+  padding-bottom: 5px; /* push action icons down for consistent divider line */
 }
 
 /* Styles pour les détails de la patiente */
@@ -1062,6 +1064,7 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
+  opacity : 0.9;
 }
 
 .info-card {
@@ -1076,6 +1079,9 @@ a:hover {
   margin-bottom: 20px;
   font-size: 18px;
 }
+
+
+
 
 .info-list {
   display: flex;
@@ -1477,47 +1483,21 @@ a:hover {
     word-break: break-word;
 }
 .modules-section .modules-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-.module-progress-item {
-    background-color: var(--light-color);
-    padding: 15px;
-    border-radius: var(--border-radius);
-}
-.progress-container {
-    margin-top: 10px;
-}
-.progress-bar {
-    width: 100%;
-    background-color: var(--border-color);
-    border-radius: var(--border-radius);
-    height: 8px;
-    overflow: hidden;
-}
-.progress-fill {
-    background-color: var(--primary-color);
-    height: 100%;
-    transition: width 0.3s ease-in-out;
-}
-
-/* Styles pour la page de détails des modules - liste de patientes */
-.module-assignments .patient-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 15px;
 }
-/* Adaptation mobile */
-@media (max-width: 768px) {
-  .module-assignments .patient-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.module-progress-item {
+  background-color: var(--light-color);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-@media (max-width: 480px) {
-  .module-assignments .patient-list {
-    grid-template-columns: 1fr;
-  }
+.module-progress-item .module-info h4 {
+  margin: 0;
+  font-size: 16px;
 }
 
 /* Switch toggle */
@@ -1566,4 +1546,34 @@ a:hover {
 }
 .switch input:checked + .slider:before {
   transform: translateX(20px);
+}
+
+/* Modules details page: 3-column patient grid */
+.module-assignments .patient-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+.module-assignments .patient-list .patient-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--card-color);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+.module-assignments .patient-list .patient-item .patient-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+.module-assignments .patient-list .patient-item .patient-info {
+  margin: 0 15px 0 0;
+}
+.module-assignments .patient-list .patient-item .patient-toggle {
+  margin-left: auto;
 }
