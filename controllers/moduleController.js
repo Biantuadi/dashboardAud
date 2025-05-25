@@ -58,7 +58,7 @@ exports.addModule = async (req, res) => {
     const moduleData = {
       titre: req.body.title,
       description: req.body.description,
-      miniature: req.file ? `/uploads/modules/${req.file.filename}` : '/images/default-module.png',
+      miniature: req.file ? req.file.base64 : '/images/default-module.png',
       est_publie: req.body.isPublished === 'on',
       est_gratuit: req.body.isFree === 'on',
       duree_estimee: parseInt(req.body.estimatedDuration || 0),
@@ -208,7 +208,7 @@ exports.updateModule = async (req, res) => {
     const moduleData = {
       titre: req.body.title,
       description: req.body.description,
-      miniature: req.file ? `/uploads/modules/${req.file.filename}` : module.miniature,
+      miniature: req.file ? req.file.base64 : module.miniature,
       est_publie: req.body.isPublished === 'on',
       est_gratuit: req.body.isFree === 'on',
       duree_estimee: parseInt(req.body.estimatedDuration || 0),

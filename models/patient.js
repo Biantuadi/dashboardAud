@@ -63,7 +63,7 @@ const create = async (patientData) => {
     competences || null,
     experience || null,
     notes || null,
-    photo || '/images/photo-defaut'
+    photo || '/images/photo-defaut'  // Maintenant stocké en base64
   ]);
   return { id: result.insertId, ...patientData };
 };
@@ -88,7 +88,7 @@ const update = async (id, patientData) => {
     competences || null,
     experience || null,
     notes || null,
-    photo || '/images/photo-defaut',
+    photo || '/images/photo-defaut',  // Maintenant stocké en base64
     id
   ]);
   return findById(id);

@@ -1,5 +1,5 @@
 /**
- * Configuration pour le téléchargement de fichiers avec Multer
+ * Configuration pour le traitement des images en base64
  */
 
 const multer = require('multer');
@@ -7,53 +7,43 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
-// Créer les dossiers de téléchargement s'ils n'existent pas
-const createUploadDirs = () => {
-  const dirs = [
-    './public/uploads',
-    './public/uploads/modules',
-    './public/uploads/patients',
-    './public/uploads/content'
-  ];
-  
-  dirs.forEach(dir => {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+// Fonction pour convertir une image en base64
+const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(null);
+      return;
     }
+
+    // Vérifier si c'est déjà une chaîne base64
+    if (typeof file === 'string' && file.startsWith('data:image')) {
+      resolve(file);
+      return;
+    }
+
+    // Si c'est un fichier uploadé via multer
+    if (file.buffer) {
+      const base64 = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+      resolve(base64);
+      return;
+    }
+
+    // Si c'est un chemin de fichier
+    if (file.path) {
+      fs.readFile(file.path, (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        const base64 = `data:${file.mimetype};base64,${data.toString('base64')}`;
+        resolve(base64);
+      });
+      return;
+    }
+
+    reject(new Error('Format de fichier non supporté'));
   });
 };
-
-createUploadDirs();
-
-// Configurer le stockage pour les modules
-const moduleStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './public/uploads/modules');
-  },
-  filename: (req, file, cb) => {
-    cb(null, 'module-' + Date.now() + path.extname(file.originalname));
-  }
-});
-
-// Configurer le stockage pour les patientes
-const patientStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './public/uploads/patients');
-  },
-  filename: (req, file, cb) => {
-    cb(null, 'patient-' + Date.now() + path.extname(file.originalname));
-  }
-});
-
-// Configurer le stockage pour le contenu des modules
-const contentStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './public/uploads/content');
-  },
-  filename: (req, file, cb) => {
-    cb(null, 'content-' + Date.now() + path.extname(file.originalname));
-  }
-});
 
 // Filtre pour les images
 const imageFilter = (req, file, cb) => {
@@ -88,24 +78,39 @@ const documentFilter = (req, file, cb) => {
 // Limites de taille de fichier
 const maxSize = parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024; // 5MB par défaut
 
+// Configuration de multer pour stocker en mémoire
+const memoryStorage = multer.memoryStorage();
+
 // Créer les instances de téléchargement
 const uploadModule = multer({
-  storage: moduleStorage,
+  storage: memoryStorage,
   limits: { fileSize: maxSize },
   fileFilter: imageFilter
 });
 
 const uploadPatient = multer({
-  storage: patientStorage,
+  storage: memoryStorage,
   limits: { fileSize: maxSize },
   fileFilter: imageFilter
 });
 
 const uploadContent = multer({
-  storage: contentStorage,
+  storage: memoryStorage,
   limits: { fileSize: maxSize },
   fileFilter: documentFilter
 });
+
+// Middleware pour convertir les images en base64
+const convertImagesToBase64 = async (req, res, next) => {
+  try {
+    if (req.file) {
+      req.file.base64 = await convertToBase64(req.file);
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Middleware de gestion des erreurs de téléchargement
 const handleUploadError = (err, req, res, next) => {
@@ -138,5 +143,7 @@ module.exports = {
   uploadModule: uploadModule.single('thumbnail'),
   uploadPatient: uploadPatient.single('avatar'),
   uploadContent: uploadContent.single('file'),
-  handleUploadError
+  handleUploadError,
+  convertImagesToBase64,
+  convertToBase64
 };

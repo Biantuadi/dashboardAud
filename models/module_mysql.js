@@ -63,7 +63,7 @@ const create = async (moduleData) => {
   const result = await query(sql, [
     titre,
     description,
-    miniature,
+    miniature, // Maintenant stocké en base64
     est_publie ? 1 : 0,
     est_gratuit ? 1 : 0,
     duree_estimee || 0,
@@ -88,7 +88,7 @@ const update = async (id, moduleData) => {
   await query(sql, [
     titre,
     description,
-    miniature,
+    miniature, // Maintenant stocké en base64
     est_publie ? 1 : 0,
     est_gratuit ? 1 : 0,
     duree_estimee || 0,
@@ -104,12 +104,18 @@ const remove = async (id) => {
   return await query(sql, [id]);
 };
 
-// Fonctions pour récupérer le contenu d'un module
+// Fonction pour récupérer les types de blocs
+const getBlockTypes = async () => {
+  const sql = 'SELECT * FROM type_bloc ORDER BY type';
+  return await query(sql);
+};
+
+// Fonction pour récupérer le contenu d'un module
 const getModuleContent = async (moduleId) => {
   const sql = `
-    SELECT cb.*, b.type
+    SELECT cb.*, tb.type
     FROM contenu_bloc cb
-    JOIN bloc b ON cb.bloc_id = b.id
+    JOIN type_bloc tb ON cb.bloc_id = tb.id
     WHERE cb.module_id = ?
     ORDER BY cb.ordre ASC
   `;
@@ -142,40 +148,10 @@ const addContentBlock = async (moduleId, blockData) => {
   };
 };
 
-// Fonction pour mettre à jour un bloc de contenu
-const updateContentBlock = async (blockId, blockData) => {
-  const { contenu, url_ressource, ordre, metadata } = blockData;
-  
-  const sql = `
-    UPDATE contenu_bloc 
-    SET contenu = ?, url_ressource = ?, ordre = ?, metadata = ?
-    WHERE id = ?
-  `;
-  
-  await query(sql, [
-    contenu, 
-    url_ressource || null, 
-    ordre, 
-    metadata ? JSON.stringify(metadata) : null, 
-    blockId
-  ]);
-  
-  return {
-    id: blockId,
-    ...blockData
-  };
-};
-
 // Fonction pour supprimer un bloc de contenu
 const removeContentBlock = async (blockId) => {
   const sql = 'DELETE FROM contenu_bloc WHERE id = ?';
   return await query(sql, [blockId]);
-};
-
-// Fonction pour récupérer tous les types de blocs disponibles
-const getBlockTypes = async () => {
-  const sql = 'SELECT * FROM bloc';
-  return await query(sql);
 };
 
 module.exports = {
@@ -186,9 +162,8 @@ module.exports = {
   create,
   update,
   remove,
+  getBlockTypes,
   getModuleContent,
   addContentBlock,
-  updateContentBlock,
-  removeContentBlock,
-  getBlockTypes
+  removeContentBlock
 };

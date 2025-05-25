@@ -85,8 +85,8 @@ exports.addPatient = async (req, res) => {
       emploi_actuel, emploi_vise, competences, experience, notes 
     } = req.body;
     
-    // Déterminer le chemin de la photo
-    const photo = req.file ? `/uploads/patients/${req.file.filename}` : '/images/photo-defaut';
+    // Utiliser l'image en base64
+    const photo = req.file ? req.file.base64 : '/images/photo-defaut';
     
     // Créer la nouvelle patiente dans la base de données
     const newPatient = await Patient.create({
@@ -170,8 +170,9 @@ exports.updatePatient = async (req, res) => {
       nom, prenom, email, telephone, 
       emploi_actuel, emploi_vise, competences, experience, notes 
     } = req.body;
-    // Déterminer le chemin de la photo
-    const photo = req.file ? `/uploads/patients/${req.file.filename}` : existing.photo;
+    
+    // Utiliser l'image en base64
+    const photo = req.file ? req.file.base64 : existing.photo;
     
     // Mettre à jour la patiente dans la base de données
     await Patient.update(id, {
