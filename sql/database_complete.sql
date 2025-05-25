@@ -49,7 +49,7 @@ CREATE TABLE `utilisateur` (
   `competences` text DEFAULT NULL,
   `experience` text DEFAULT NULL,
   `notes` text DEFAULT NULL,
-  `photo` varchar(255) DEFAULT NULL,
+  `image_profil` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
