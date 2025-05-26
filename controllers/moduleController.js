@@ -12,11 +12,13 @@ const ModuleAssignment = require('../models/moduleAssignment');
 exports.getModules = async (req, res) => {
   try {
     const modules = await Module.findAll();
+    const user = JSON.parse(req.cookies.user);
     
     res.render('modules/list', {
       title: 'Liste des modules',
       active: 'modules',
-      modules
+      modules,
+      user
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des modules:', error);
@@ -31,6 +33,7 @@ exports.getModules = async (req, res) => {
 // Afficher le formulaire d'ajout de module
 exports.getAddModuleForm = async (req, res) => {
   try {
+    const user = JSON.parse(req.cookies.user);
     // Récupérer toutes les catégories
     const blockTypes = await Module.getBlockTypes();
     const categories = await query('SELECT id, nom FROM categorie ORDER BY nom');
@@ -40,7 +43,8 @@ exports.getAddModuleForm = async (req, res) => {
       active: 'modules',
       module: {},
       blockTypes,
-      categories
+      categories,
+      user
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des données pour le formulaire:', error);
@@ -55,6 +59,7 @@ exports.getAddModuleForm = async (req, res) => {
 // Ajouter un nouveau module 
 exports.addModule = async (req, res) => {
   try {
+    const user = JSON.parse(req.cookies.user);
     const moduleData = {
       titre: req.body.title,
       description: req.body.description,
@@ -62,7 +67,7 @@ exports.addModule = async (req, res) => {
       est_publie: req.body.isPublished === 'on',
       est_gratuit: req.body.isFree === 'on',
       duree_estimee: parseInt(req.body.estimatedDuration || 0),
-      cree_par: req.session.user.id,
+      cree_par: user.id,
       categorie_id: req.body.categorie_id || null
     };
     const newModule = await Module.create(moduleData);
@@ -125,6 +130,7 @@ exports.addModule = async (req, res) => {
 // Afficher les détails d'un module
 exports.getModuleDetails = async (req, res) => {
   try {
+    const user = JSON.parse(req.cookies.user);
     const module = await Module.findById(req.params.id);
     
     if (!module) {
@@ -155,7 +161,8 @@ exports.getModuleDetails = async (req, res) => {
       assignedPatients,
       allPatients,
       assignedIds,
-      stats: moduleStats
+      stats: moduleStats,
+      user
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des détails du module:', error);
@@ -170,6 +177,7 @@ exports.getModuleDetails = async (req, res) => {
 // Afficher le formulaire de modification d'un module
 exports.getEditModuleForm = async (req, res) => {
   try {
+    const user = JSON.parse(req.cookies.user);
     const module = await Module.findById(req.params.id);
     
     if (!module) {
@@ -189,7 +197,8 @@ exports.getEditModuleForm = async (req, res) => {
       active: 'modules',
       module,
       moduleContent,
-      categories
+      categories,
+      user
     });
   } catch (error) {
     console.error('Erreur lors de la récupération du module à modifier:', error);
@@ -204,6 +213,7 @@ exports.getEditModuleForm = async (req, res) => {
 // Mettre à jour un module
 exports.updateModule = async (req, res) => {
   try {
+    const user = JSON.parse(req.cookies.user);
     const { id } = req.params;
     const moduleData = {
       titre: req.body.title,

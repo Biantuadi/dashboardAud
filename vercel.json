@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/public/(.*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/modules/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/patients/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/dashboard/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/views/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "app.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
+} 
